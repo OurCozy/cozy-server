@@ -6,6 +6,10 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
+var mongoosePW = require('./config/userinfo.json');
+
 var app = express();
 
 // view engine setup
@@ -35,5 +39,22 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+mongoose.Promise = global.Promise;
+
+var db = mongoose.connection;
+db.on('error', console.error);
+db.once('open', function() {
+  // CONNECTED TO MONGODB SERVER
+  console.log("connected to mongod server\n");
+});
+
+mongoose.connect(
+  'mongodb+srv://cozyServer:' +
+  mongoosePW.mongoosePW + 
+  '@cozyserver.q8jnh.mongodb.net/test'
+)
 
 module.exports = app;
