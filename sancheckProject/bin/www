@@ -8,6 +8,21 @@ var app = require('../app');
 var debug = require('debug')('sancheckproject:server');
 var http = require('http');
 
+// var mongoose = require('mongoose');
+// const mongoosePW = require('../config/userinfo.json');
+
+// let db = mongoose.connection;
+// db.on("error", console.error);
+// db.once('open', function() {
+//   console.log('Connected to mongod server');
+// });
+
+// mongoose.connect(
+//   'mongodb+srv://cozyServer:' +
+//   mongoosePW.mongoosePW + 
+//   '@cozyserver.q8jnh.mongodb.net/test'
+// )
+
 /**
  * Get port from environment and store in Express.
  */

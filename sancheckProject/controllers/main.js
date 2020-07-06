@@ -1,13 +1,20 @@
-const MainModel = require('../models/main');
-const encrypt = require('../modules/crypto');
-const statusCode = require('../modules/statusCode');
-const resMessage = require('../modules/resMessage');
-const util = require('../modules/util');
-const jwt = require('../modules/jwt');
+const MainModel = require('../models/main'); // 스키마 불러오기 
+const { DB_ERROR, OK } = require('../modules/statusCode');
+
 
 const main = {
     showRecommendation : async (req, res) => {
-
+        const bookstore = await MainModel.showRecommendation();
+        console.log(bookstore);
+        // console.log(mongoose.connection.readyState);
+        try {
+            if (bookstore.length === 0) {
+                return res.status(OK).send({err: 'Bookstore list not found'});
+            }
+            else return res.status(OK).send(bookstore);
+        } catch (err) {
+            res.status(DB_ERROR).send(err);
+        }
     },
     showDetail : async (req, res) => {
 
