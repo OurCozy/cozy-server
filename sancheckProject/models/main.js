@@ -8,7 +8,7 @@ const bookstore = {
         // const fields = 'id, name, password, salt, email';
         // const questions = `?, ?, ?, ?, ?`;
         // const values = [id, name, password, salt, email];
-        const query = `SELECT * FROM ${table}`;
+        const query = `SELECT shortIntro, shortIntro2, bookstoreName, location FROM ${table} WHERE shortIntro IS NOT NULL`;
         try {
             const result = await pool.queryParam(query);
             return result;
@@ -17,6 +17,16 @@ const bookstore = {
             throw err;
         }
     },
+    showLocation: async (sectionIdx) => {
+        const query = `SELECT * FROM ${table} WHERE sectionIdx = ${sectionIdx};`;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('showLocation ERROR : ', err);
+            throw err;
+        }
+    }
 }
 
 module.exports = bookstore;

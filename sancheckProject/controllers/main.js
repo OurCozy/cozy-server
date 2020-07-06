@@ -1,29 +1,40 @@
 const MainModel = require('../models/main'); // 스키마 불러오기 
-const { DB_ERROR, OK } = require('../modules/statusCode');
+const statusCode = require('../modules/statusCode');
+const resMessage = require('../modules/resMessage');
+const util = require('../modules/util');
 
 
 const main = {
     showRecommendation : async (req, res) => {
         const bookstore = await MainModel.showRecommendation();
-        console.log(bookstore);
-        // console.log(mongoose.connection.readyState);
+        // console.log(bookstore);
         try {
-            if (bookstore.length === 0) {
-                return res.status(OK).send({err: 'Bookstore list not found'});
+            if (!bookstore.length) {
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
             }
-            else return res.status(OK).send(bookstore);
+            else return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, bookstore));
         } catch (err) {
-            res.status(DB_ERROR).send(err);
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
     },
     showDetail : async (req, res) => {
 
     },
     showLocation : async (req, res) => {
-
+        const sectionIdx = req.params.sectionIdx;
+        console.log(sectionIdx);
+        try {
+            const bookstoreBySection = await MainModel.showLocation(sectionIdx);
+            if (!bookstoreBySection.length) {
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
+            }
+            else return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, bookstoreBySection));
+        } catch (err) {
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
     },
     showInterest : async (req, res) => {
-
+        
     },
     showMypage : async (req, res) => {
 
