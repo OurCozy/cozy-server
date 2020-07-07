@@ -23,6 +23,7 @@ module.exports = {
     
     // 프로필 조회
     READ_PROFILE_SUCCESS: '프로필 조회 성공',
+    READ_PROFILE_FAIL: '정보가 없습니다.',
     UNSUPPORTED_TYPE: '지원하지 않는 타입입니다.',
 
     // 프로필 업데이트

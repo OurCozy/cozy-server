@@ -1,16 +1,16 @@
 const pool = require('../modules/pool');
-const table = 'bookstore';
-const table2 = 'hashtag';
-const table3 = 'images';
-const table4 = 'bookmarks';
-const table5 = 'user';
+const bookstoreTable = 'bookstore';
+const hashtagTable = 'hashtag';
+const imagesTable = 'images';
+const bookmarksTable = 'bookmarks';
+const userTable = 'user';
 
 const bookstore = {
     showRecommendation: async () => {
         const fields = 'shortIntro, shortIntro2, bookstoreName, location, bookmark';
         // const questions = `?, ?, ?, ?, ?`;
         // const values = [id, name, password, salt, email];
-        const query = `SELECT ${fields} FROM ${table} WHERE shortIntro IS NOT NULL ORDER BY bookmark DESC LIMIT 8;`;
+        const query = `SELECT ${fields} FROM ${bookstoreTable} WHERE shortIntro IS NOT NULL ORDER BY bookmark DESC LIMIT 8;`;
         try {
             const result = await pool.queryParam(query);
             return result;
@@ -35,7 +35,7 @@ const bookstore = {
         }
     },
     showLocation: async (sectionIdx) => {
-        const query1 = `SELECT b.profile, b.bookstoreName, b.location, h.hashtag FROM ${table} b, ${table2} h 
+        const query1 = `SELECT b.profile, b.bookstoreName, b.location, h.hashtag FROM ${bookstoreTable} b, ${hashtagTable} h 
                         WHERE b.sectionIdx = ${sectionIdx} AND b.bookstoreIdx = h.bookstoreIdx;`;
         try {
             const result = await pool.queryParam(query1);
@@ -49,7 +49,7 @@ const bookstore = {
         const query = `SELECT * FROM ${table4} WHERE `
     },
     showMypage: async (userIdx) => {
-        const query = `SELECT profile, nickname, email FROM ${table5} WHERE userIdx = '${userIdx}';`;
+        const query = `SELECT profile, nickname, email FROM ${userTable} WHERE userIdx = '${userIdx}';`;
         try {
             const result = await pool.queryParam(query);
             return result;
@@ -60,9 +60,9 @@ const bookstore = {
     },
     showInterest: async () => {
         const query=`SELECT A.bookstoreIdx, A.bookstoreName, A.profile, B.hashtag
-        FROM ${table} A LEFT OUTER JOIN ${table2} B
+        FROM ${bookstoreTable} A LEFT OUTER JOIN ${hashtagTable} B
         ON A.bookstoreIdx = B.bookstoreIdx
-        LEFT OUTER JOIN ${table4} C
+        LEFT OUTER JOIN ${bookmarksTable} C
         ON B.bookstoreIdx = C.bookstoreIdx
         WHERE C.userIdx=1`;
         try{
