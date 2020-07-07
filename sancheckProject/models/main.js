@@ -19,6 +19,21 @@ const bookstore = {
             throw err;
         }
     },
+    showDetail: async (bookstoreIdx) => {
+        const query = `SELECT A.*, B.*, C.*
+        FROM ${bookstoreTable} A LEFT OUTER JOIN ${hashtagTable} B
+        ON A.bookstoreIdx = B.bookstoreIdx
+        LEFT OUTER JOIN ${imagesTable} C
+        ON B.bookstoreIdx = C.bookstoreIdx WHERE A.bookstoreIdx=${bookstoreIdx}`;
+
+        try { 
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('showRecommendation ERROR : ', err);
+            throw err;
+        }
+    },
     showLocation: async (sectionIdx) => {
         const query1 = `SELECT b.profile, b.bookstoreName, b.location, h.hashtag FROM ${table} b, ${table2} h 
                         WHERE b.sectionIdx = ${sectionIdx} AND b.bookstoreIdx = h.bookstoreIdx;`;
@@ -58,7 +73,6 @@ const bookstore = {
             throw err;
         }
     },
-
 }
 
 module.exports = bookstore;

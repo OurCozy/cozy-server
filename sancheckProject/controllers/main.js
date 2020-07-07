@@ -17,7 +17,18 @@ const main = {
         }
     },
     showDetail : async (req, res) => {
-        
+        const bookstoreIdx = req.params.bookstoreIdx;
+        const bookstore = await MainModel.showDetail(bookstoreIdx);
+        console.log(bookstore);
+        try {
+            if (bookstore.length === 0) {
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
+            }
+            else return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, bookstore));
+        } catch (err) {
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+
     },
     showLocation : async (req, res) => {
         const sectionIdx = req.params.sectionIdx;
