@@ -6,7 +6,6 @@ const main = {
     showRecommendation : async (req, res) => {
         const bookstore = await MainModel.showRecommendation();
         console.log(bookstore);
-        // console.log(mongoose.connection.readyState);
         try {
             if (bookstore.length === 0) {
                 return res.status(OK).send({err: 'Bookstore list not found'});
@@ -17,12 +16,22 @@ const main = {
         }
     },
     showDetail : async (req, res) => {
-
+        
     },
     showLocation : async (req, res) => {
 
     },
     showInterest : async (req, res) => {
+        const interest = await MainModel.showInterest();
+        try{
+            if(interest.length===0){
+                return res.status(OK).send({err: 'No Interesting Bookstore'});
+            }else{
+                return res.status(OK).send(interest);
+            }
+        }catch(err){
+            res.status(DB_ERROR).send(err);
+        }
 
     },
     showMypage : async (req, res) => {
