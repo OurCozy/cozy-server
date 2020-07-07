@@ -35,7 +35,7 @@
 # 3. ERD Diagram  
 
 <div align="center" style="display:flex;">
-	<img src="">
+	<img src="./image/cozy_erd.png">
 </div>
 
 
