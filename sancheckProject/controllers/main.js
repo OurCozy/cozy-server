@@ -1,4 +1,7 @@
 const MainModel = require('../models/main'); // 스키마 불러오기 
+const resMessage = require('../modules/resMessage');
+const statusCode = require('../modules/statusCode');
+const util = require('../modules/util');
 const { DB_ERROR, OK } = require('../modules/statusCode');
 
 
@@ -22,11 +25,11 @@ const main = {
         console.log(bookstore);
         try {
             if (bookstore.length === 0) {
-                return res.status(OK).send({err: 'Bookstore list not found'});
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
             }
-            else return res.status(OK).send(bookstore);
+            else return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, bookstore));;
         } catch (err) {
-            res.status(DB_ERROR).send(err);
+            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));;
         }
 
     },
