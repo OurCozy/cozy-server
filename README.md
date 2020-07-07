@@ -12,7 +12,7 @@
 * [API 문서](https://github.com/OurCozy/cozy-server/wiki)</b>
 
 <br>
----
+
 ## :bookmark_tabs: 프로젝트 설명
 
 <b>바쁜 도심 속 휴식처, 공간과 경험을 파는 세상의 모든 독립서점 🌱, Cozy 입니다.</b>
@@ -21,10 +21,11 @@
 </br>
 
 <br>
----
+
+
 # 2. ERD Diagram  
 
 <div align="center" style="display:flex;">
 	<img src="">
 </div>
----
+
