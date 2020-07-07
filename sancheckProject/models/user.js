@@ -1,5 +1,7 @@
 const pool = require('../modules/pool');
 const table = 'user';
+const table2 ='bookstore';
+const table3 ='images';
 
 const user = {
     signup: async (nickname, password, salt, email) => {
@@ -65,6 +67,19 @@ const user = {
             throw err;
         }
     },
+    updateImages: async(bookstoreIdx, locations)=>{
+        let query = `insert into ${table3} (bookstoreIdx, image1, image2, image3) values (${bookstoreIdx},'${locations[0]}','${locations[1]}','${locations[2]}')`;
+        try{
+            await pool.queryParam(query);
+            query=`select * from ${table3} where bookstoreIdx=${bookstoreIdx}`;
+            const result = await pool.queryParam(query);
+            return result;
+        }catch(err){
+            console.log('insert image ERR : ',err);
+            throw err;
+        }
+    },
+
     // getUserByIdx: async (userIdx) => {
     //     const query = `SELECT * FROM ${table} WHERE userIdx = ${userIdx}`;
     //     // query문 작성

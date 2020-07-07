@@ -7,7 +7,6 @@ const util = require('../modules/util');
 const main = {
     showRecommendation : async (req, res) => {
         const bookstore = await MainModel.showRecommendation();
-        // console.log(bookstore);
         try {
             if (!bookstore.length) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
@@ -18,7 +17,7 @@ const main = {
         }
     },
     showDetail : async (req, res) => {
-
+        
     },
     showLocation : async (req, res) => {
         const sectionIdx = req.params.sectionIdx;
@@ -39,6 +38,17 @@ const main = {
     updateBookmark: async (req, res) => {
         const bookstoreIdx = req.params.bookstoreIdx;
         
+        const interest = await MainModel.showInterest();
+        try{
+            if(interest.length===0){
+                return res.status(OK).send({err: 'No Interesting Bookstore'});
+            }else{
+                return res.status(OK).send(interest);
+            }
+        }catch(err){
+            res.status(DB_ERROR).send(err);
+        }
+
     },
     showMypage : async (req, res) => {
         const userIdx = req.params.userIdx;
