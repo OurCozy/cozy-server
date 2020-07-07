@@ -17,6 +17,17 @@ const main = {
         }
     },
     showDetail : async (req, res) => {
+        const bookstoreIdx = req.params.bookstoreIdx;
+        const bookstore = await MainModel.showDetail(bookstoreIdx);
+        console.log(bookstore);
+        try {
+            if (bookstore.length === 0) {
+                return res.status(OK).send({err: 'Bookstore list not found'});
+            }
+            else return res.status(OK).send(bookstore);
+        } catch (err) {
+            res.status(DB_ERROR).send(err);
+        }
 
     },
     showLocation : async (req, res) => {
