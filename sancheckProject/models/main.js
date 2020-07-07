@@ -19,30 +19,17 @@ const bookstore = {
         }
     },
     showInterest: async () => {
-        const query=`select bookstoreIdx from ${table4} where userIdx=1`;
+        const query=`SELECT A.bookstoreIdx, A.bookstoreName, A.profile, B.hashtag
+        FROM ${table} A LEFT OUTER JOIN ${table2} B
+        ON A.bookstoreIdx = B.bookstoreIdx
+        LEFT OUTER JOIN ${table4} C
+        ON B.bookstoreIdx = C.bookstoreIdx
+        WHERE C.userIdx=1`;
         try{
-            const result = await pool.queryParam(query);
-            var resList=[];
-            for(var i=0;i<result.length;i++){
-                resList[i]=result[i].bookstoreIdx;
-            }
-            var res=[];
-            for(var i=0;i<resList.length;i++){
-                const query2=`select ${table}.bookstoreIdx, ${table}.bookstoreName, ${table}.profile, ${table2}.hashtag from ${table}, ${table2} where ${table}.bookstoreIdx=${table2}.bookstoreIdx and ${table}.bookstoreIdx=${resList[i]}`;
-                try{
-                    const result2=await pool.queryParam(query2);
-                    var hashtags='';
-                    var hashtags=result2[0].hashtag+','+result2[1].hashtag+','+result2[2].hashtag;
-                    res[i]={bookstoreIdx:result2[i].bookstoreIdx,bookstoreName:result2[i].bookstoreName, profile:result2[i].profile, hashtag:hashtags};
-                }catch(err){
-                    console.log('showInterst ERROR : ', err);
-                    throw err;
-                }
-            }
-            console.log(res);
-            return res;
-        } catch(err){
-            console.log('showInterst ERROR : ', err);
+            const result=await pool.queryParam(query);
+            return result;
+        }catch(err){
+            console.log('showInterest ERROR : ', err);
             throw err;
         }
     },
