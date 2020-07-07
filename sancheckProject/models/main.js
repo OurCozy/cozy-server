@@ -1,7 +1,7 @@
 const pool = require('../modules/pool');
 const bookstoreTable = 'bookstore';
-const table2 = 'hashtag';
-const table3 = 'images';
+const hashtagTable = 'hashtag';
+const imagesTable = 'images';
 
 const bookstore = {
 
@@ -17,7 +17,11 @@ const bookstore = {
     },
 
     showDetail: async (bookstoreIdx) => {
-        const query = `select * from ${bookstoreTable} WHERE bookstoreIdx=${bookstoreIdx}`;
+        const query = `SELECT A.*, B.*, C.*
+        FROM ${bookstoreTable} A LEFT OUTER JOIN ${hashtagTable} B
+        ON A.bookstoreIdx = B.bookstoreIdx
+        LEFT OUTER JOIN ${imagesTable} C
+        ON B.bookstoreIdx = C.bookstoreIdx WHERE A.bookstoreIdx=${bookstoreIdx}`;
 
         try { 
             const result = await pool.queryParam(query);
