@@ -24,6 +24,7 @@ const user = {
         const query = `SELECT * FROM ${table} WHERE nickname = '${nickname}';`;
         try {
             const result = await pool.queryParam(query);
+            console.log(result);
             return result;
         } catch (err) {
             if (err.errno == 1062) {
@@ -45,6 +46,22 @@ const user = {
                 throw err;
             }
             console.log('checkUser ERROR : ', err);
+            throw err;
+        }
+    },
+    updateProfile: async (userIdx, profile) => {
+        let query = `UPDATE ${table} SET profile = '${profile}' WHERE userIdx = ${userIdx}`;
+        try {
+            await pool.queryParam(query);
+            query = `SELECT nickname, email, profile FROM ${table} WHERE userIdx = ${userIdx}`;
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            if (err.errno == 1062) {
+                console.log('update profile ERROR : ', err.errno, err.code);
+                throw err;
+            }
+            console.log('update profile ERROR : ', err);
             throw err;
         }
     },
