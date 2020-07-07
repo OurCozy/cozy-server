@@ -8,6 +8,7 @@ router.get('/recommendation', mainController.showRecommendation);
 router.get('/detail/:bookstoreIdx', mainController.showDetail);
 router.get('/map/:sectionIdx', mainController.showLocation);
 router.get('/interest', mainController.showInterest);
+router.put('/interest/:bookstoreIdx', mainController.updateBookmark);
 router.get('/mypage', mainController.showMypage);
 router.get('/mypage/review', mainController.showMyReview);
 router.post('/detail/review', mainController.writeReview);

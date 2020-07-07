@@ -36,6 +36,10 @@ const main = {
     showInterest : async (req, res) => {
         
     },
+    updateBookmark: async (req, res) => {
+        const bookstoreIdx = req.params.bookstoreIdx;
+        
+    },
     showMypage : async (req, res) => {
 
     },
