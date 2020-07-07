@@ -35,7 +35,7 @@
 # 3. ERD Diagram  
 
 <div align="center" style="display:flex;">
-	<img src="">
+	<img width="534" alt="erd" src="https://user-images.githubusercontent.com/52529595/86788943-b492ab00-c0a1-11ea-9a53-169cad572eb9.png">
 </div>
 
 
