@@ -9,9 +9,9 @@
 </p>
 
 
-* <b> SOPT 25th APPJAM
+* <b> SOPT 26th APPJAM
     
-* 프로젝트 기간: 2020.06.22=8 ~ 2020.07.18
+* 프로젝트 기간: 2020.06.27 ~ 2020.07.18
 
 * [API 문서](https://github.com/OurCozy/cozy-server/wiki)</b>
 
