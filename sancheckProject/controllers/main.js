@@ -59,7 +59,6 @@ const main = {
         }catch(err){
             res.status(DB_ERROR).send(err);
         }
-
     },
     showMypage : async (req, res) => {
         const userIdx = req.params.userIdx;
