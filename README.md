@@ -3,7 +3,7 @@
 
 <p align="center">
 <div align="center" style="display:flex;">
-	<img src="./sancheckProject/image/cozy.png" width="250">
+	<img src="https://user-images.githubusercontent.com/43127088/86875633-e9444800-c11d-11ea-9f13-cd2543ac2475.png" width="250">
 </div>
   바쁜 도심 속 휴식처, 공간과 경험을 파는 세상의 모든 독립서점 📚
 </p>
@@ -38,7 +38,7 @@
 
 # 3. Server Architecture  
 <div align="center" style="display:flex;">
-	<img src="./sancheckProject/image/architecture.png">
+	<img src="https://user-images.githubusercontent.com/43127088/86875643-ed706580-c11d-11ea-97a9-2210568f6082.png">
 </div>
 
 
