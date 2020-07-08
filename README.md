@@ -35,6 +35,11 @@
 * 후기 작성 및 조회
 * 키워드 검색
 * 최근 본 책방 조회
+# 2 - 1 Function detail
+
+<div align="center" style="display:flex;">
+	<img src="https://user-images.githubusercontent.com/43127088/86893684-fae91800-c13c-11ea-886c-c04f72a587ef.PNG">
+</div>
 
 # 3. Server Architecture  
 <div align="center" style="display:flex;">
