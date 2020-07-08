@@ -32,9 +32,9 @@
 * 서점별 상세 정보 제공
 * 지역별 독립 서점 조회
 * 관심 책방 등록 및 조회
-* ? 후기 작성 및 조회
-* ? 키워드 검색
-* ? 최근 본 책방 조회
+* 후기 작성 및 조회
+* 키워드 검색
+* 최근 본 책방 조회
 
 # 3. Server Architecture  
 <div align="center" style="display:flex;">
@@ -45,7 +45,7 @@
 # 4. ER Diagram  
 
 <div align="center" style="display:flex;">
-	<img src="./sancheckProject/image/cozy_erd.png">
+	<img src="https://user-images.githubusercontent.com/43127088/86874549-88b40b80-c11b-11ea-8ae8-bd70d2c0a4f2.png">
 </div>
 
 # 5. dependencies module (package.json)
@@ -74,15 +74,15 @@
 }
 
 ```
-- **aws-sdk** : ?
+- **aws-sdk** : 비차단 I/O 지원, 향상된 시작 성능 및 페이지 매김 응답을 통한 자동 반복과 같이 자주 요청된 다수의 기능
 - **crypto** : 패스워드 암호화 및 인증 
 - **express** : 웹,서버 개발 프레임워크
 - **jsonwebtoken** : JWT(Json Web Token) 생성 및 인증 
 - **multer** : 파일 업로드 도구
 - **multer-s3** : AWS S3 파일 업로드 도구
-- **nodemon** : ?
-- **pbkdf2** : ?
-- **promise-mysql** : ?
+- **nodemon** : node.js 서버 개발시에 소스코드에 수정이 있을 경우, 자동으로 서버를 다시 시작해주는 툴
+- **pbkdf2** : hash 를 생성할 때 마다 다른 salt 를 사용하지만, 암호화를 할 때 사용했던 salt 를 그대로 사용하면 hash 값도 같기 때문에 이를 활용해 비밀번호를 안전하게 저장
+- **promise-mysql** : async/await를 편하게 사하기 위한 모듈
 - **rand-token** : 랜덤 토큰 생성 도구
  
 
