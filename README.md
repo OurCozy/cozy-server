@@ -11,35 +11,44 @@
 
 * <b> SOPT 25th APPJAM
     
-* 프로젝트 기간: 2020.06.22=8 ~ 2020.07.18
+* 프로젝트 기간: 2020.06.22 ~ 2020.07.18
 
 * [API 문서](https://github.com/OurCozy/cozy-server/wiki)</b>
 
 <br>
 
-# 1. bookmark_tabs: 프로젝트 설명
+# 1. 프로젝트 설명
 
 <b>바쁜 도심 속 휴식처, 공간과 경험을 파는 세상의 모든 독립서점 🌱, Cozy 입니다.</b>
 <br>
-아직
+<div align="center" style="display:flex;">
+	<img src="https://user-images.githubusercontent.com/43127088/86873865-3a523d00-c11a-11ea-82ae-67cfe359cdaa.PNG" width="500">
+</div>
 </br>
 
 <br>
 
-# 2. Server Architecture  
+# 2. 기능명세서
+<br>
+<div align="center" style="display:flex;">
+	<img src="https://user-images.githubusercontent.com/43127088/86873873-3de5c400-c11a-11ea-9244-f984a71d5603.PNG" width="500">
+</div>
+</br>
+
+# 3. Server Architecture  
 <div align="center" style="display:flex;">
 	<img src="">
 </div>
 
 
-# 3. ERD Diagram  
+# 4. ERD Diagram  
 
 <div align="center" style="display:flex;">
 	<img width="534" alt="erd" src="https://user-images.githubusercontent.com/52529595/86788943-b492ab00-c0a1-11ea-9a53-169cad572eb9.png">
 </div>
 
 
-# 4. Team Role
+# 5. Team Role
 
 ####  김가인
 
@@ -59,7 +68,7 @@
 -
 -
 
-# 5. package
+# 6. package
 
 사용 패키지(모듈)은 다음과 같습니다.
 
@@ -71,7 +80,7 @@
 - **rand-token** : 랜덤 토큰 생성 도구
  
 
-# 6. 사용된 도구
+# 7. 사용된 도구
 
 * [Node.js](https://nodejs.org/ko/)
 * [Express.js](http://expressjs.com/ko/) 
@@ -79,7 +88,7 @@
 * [MySQL](https://www.mysql.com/) - MySQL DB
 
 
-# 7. 배포
+# 8. 배포
 
 * AWS EC2 - 클라우드 컴퓨팅 시스템
 * AWS S3 - 클라우드 데이터 저장소
