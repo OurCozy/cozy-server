@@ -58,6 +58,17 @@ const main = {
     },
     updateBookmark: async (req, res) => {
         const bookstoreIdx = req.params.bookstoreIdx;
+        const userIdx = req.decoded.userIdx;
+        console.log(userIdx);
+        try {
+            const result = await MainModel.updateBookmark(userIdx, bookstoreIdx);
+            // if (!result.length) {
+            //     return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.))
+            // }
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_SUCCESS, result));
+        } catch (err) {
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
 
     },
     showMypage : async (req, res) => {

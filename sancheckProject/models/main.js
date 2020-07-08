@@ -45,8 +45,30 @@ const bookstore = {
             throw err;
         }
     },
-    updateBookmark: async (bookstoreIdx) => {
-        const query = `SELECT * FROM ${table4} WHERE `
+    updateBookmark: async (userIdx, bookstoreIdx) => {
+        const selectQuery = `SELECT * FROM ${bookmarksTable} WHERE userIdx = '${userIdx}' AND bookStoreIdx = '${bookstoreIdx}';`;
+        // 존재하면 delete, 존재 x면 update
+        const fields = 'userIdx, bookstoreIdx';
+        const questions = '?, ?';
+        const values = [userIdx, bookstoreIdx];
+        try {
+            // INSERT INTO 테이블명 (COLUMN_LIST) VALUES (COLUMN_LIST에 넣을 VALUE_LIST);
+            const updateQuery = `INSERT INTO ${bookmarksTable} (${fields}) VALUES (${questions});`
+            const deleteQuery = `DELETE FROM ${bookmarksTable} WHERE userIdx = '${userIdx}' AND bookstoreIdx = '${bookstoreIdx}';`;
+            let result = await pool.queryParam(selectQuery);
+            if (result.length === 0) {
+                result = await pool.queryParamArr(updateQuery, values);
+                const insertId = result.insertId;
+                return insertId;
+            } else {
+                await pool.queryParam(deleteQuery);
+                result = await pool.queryParam(selectQuery);
+                return result;
+            }
+        } catch (err) {
+            console.log('update bookmarks ERROR : ', err);
+            throw err;
+        }
     },
     showMypage: async (userIdx) => {
         const query = `SELECT profile, nickname, email FROM ${userTable} WHERE userIdx = '${userIdx}';`;
