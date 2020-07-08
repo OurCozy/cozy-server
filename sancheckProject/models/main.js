@@ -58,13 +58,13 @@ const bookstore = {
             throw err;
         }
     },
-    showInterest: async () => {
+    showInterest: async (userIdx) => {
         const query=`SELECT A.bookstoreIdx, A.bookstoreName, A.profile, B.hashtag
         FROM ${bookstoreTable} A LEFT OUTER JOIN ${hashtagTable} B
         ON A.bookstoreIdx = B.bookstoreIdx
         LEFT OUTER JOIN ${bookmarksTable} C
         ON B.bookstoreIdx = C.bookstoreIdx
-        WHERE C.userIdx=1`;
+        WHERE C.userIdx=${userIdx}`;
         try{
             const result=await pool.queryParam(query);
             return result;
