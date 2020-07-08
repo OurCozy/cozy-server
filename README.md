@@ -3,7 +3,7 @@
 
 <p align="center">
 <div align="center" style="display:flex;">
-	<img src="" width="250">
+	<img src="![cozy](https://user-images.githubusercontent.com/43127088/86873283-f3b01300-c118-11ea-930c-fef3c6cef28e.png)" width="250">
 </div>
   바쁜 도심 속 휴식처, 공간과 경험을 파는 세상의 모든 독립서점 🌱
 </p>
