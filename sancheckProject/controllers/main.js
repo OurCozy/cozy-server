@@ -44,7 +44,7 @@ const main = {
         }
     },
     showInterest : async (req, res) => {
-        const userIdx=req.params.userIdx;
+        const userIdx = req.decoded.userIdx;
         try{
             const interest = await MainModel.showInterest(userIdx);
             if(interest.length===0){
@@ -65,7 +65,7 @@ const main = {
             // if (!result.length) {
             //     return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.))
             // }
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_SUCCESS, result));
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_SUCCESS, {checked: result}));
         } catch (err) {
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }

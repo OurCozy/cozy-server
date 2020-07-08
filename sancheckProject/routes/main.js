@@ -9,7 +9,7 @@ router.get('/recommendation', mainController.showRecommendation);
 // 자세히보기
 router.get('/detail/:bookstoreIdx', mainController.showDetail);
 router.get('/map/:sectionIdx', mainController.showLocation);
-router.get('/interest/:userIdx', mainController.showInterest);
+router.get('/interest', AuthMiddleware.checkToken, mainController.showInterest);
 router.put('/interest/:bookstoreIdx', AuthMiddleware.checkToken, mainController.updateBookmark);
 router.get('/mypage/:userIdx', mainController.showMypage);
 router.get('/mypage/review', mainController.showMyReview);

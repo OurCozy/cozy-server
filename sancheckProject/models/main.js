@@ -58,12 +58,12 @@ const bookstore = {
             let result = await pool.queryParam(selectQuery);
             if (result.length === 0) {
                 result = await pool.queryParamArr(updateQuery, values);
-                const insertId = result.insertId;
-                return insertId;
+                // const insertId = result.insertId;
+                return 1;
             } else {
                 await pool.queryParam(deleteQuery);
-                result = await pool.queryParam(selectQuery);
-                return result;
+                // result = await pool.queryParam(selectQuery);
+                return 0;
             }
         } catch (err) {
             console.log('update bookmarks ERROR : ', err);
