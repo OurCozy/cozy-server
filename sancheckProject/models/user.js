@@ -76,10 +76,9 @@ const user = {
             return result;
         }catch(err){
             if(err.code === 'ER_DUP_ENTRY'){
-                console.log('insert image Duplicate ERR : ', err);
-                throw err;
-            }
-            else{
+                console.log('insert image Duplicate ERR : ',err);
+                return '해당 서점의 이미지는 이미 등록되어있습니다.';
+            }else{
                 console.log('insert image ERR : ',err);
                 throw err;
             }

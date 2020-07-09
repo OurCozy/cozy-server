@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-
+const senderInfo = require('../config/senderInfo.json');
 // 메일발송 객체
 const mailSender = {
 	// 메일발송 함수
@@ -11,13 +11,13 @@ const mailSender = {
             secure : false,
             requireTLS : true,
             auth: {
-                user: 'soptcozyserver@gmail.com',
-                pass: 'cozyserver123!'
+                user: senderInfo.user,
+                pass: senderInfo.pass
             }
         });
         // 메일 옵션
         var mailOptions = {
-                from: 'soptcozyserver@gmail.com',
+                from: senderInfo.user,
                 to: param.toEmail, // 수신할 이메일
                 subject: param.subject, // 메일 제목
                 text: param.text // 메일 내용
