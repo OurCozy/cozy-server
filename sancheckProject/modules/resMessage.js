@@ -29,9 +29,15 @@ module.exports = {
     // 프로필 업데이트
     UPDATE_PROFILE_SUCCESS: '프로필 업데이트 성공',
 
+    // 북마크 관련
+    BOOKMARK_SUCCESS: '북마크 체크/해제 성공',
+
     // 데이터 관련
     NO_DATA: '서점 리스트가 없습니다.',
     READ_DATA_SUCCESS: '서점 리스트 조회 성공',
 
+    //이메일 관련
+    SEND_EMAIL_SUCCESS: '이메일 발송 성공',
+    
     DB_ERROR: 'DB 오류'
 };

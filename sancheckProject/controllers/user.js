@@ -4,6 +4,8 @@ const statusCode = require('../modules/statusCode');
 const resMessage = require('../modules/resMessage');
 const util = require('../modules/util');
 const jwt = require('../modules/jwt');
+const mailer = require('../modules/mailer');
+const { NULL_VALUE } = require('../modules/statusCode');
 
 const user = {
     signup : async (req, res) => {
@@ -110,5 +112,37 @@ const user = {
         const result = await UserModel.updateProfile(userIdx, profile);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_PROFILE_SUCCESS, result));
     },
+    findPassword: async(req, res)=>{
+        const userEmail=req.body.email;
+        console.log('email:', userEmail);
+        //데이터 누락
+        if(!userEmail){
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
+        }
+        //해당 이메일이 db에 없을 때
+        const result = await UserModel.checkUserByEmail(userEmail);
+        if(result.length===0){
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_USER));
+        }
+        //임시 비밀번호를 해당 이메일로 발송
+        try{
+            const newPW = Math.random().toString(36).slice(2);
+            let emailParam = {
+                toEmail : userEmail,
+                subject : 'New Email From COZY',
+                text : `New Password : ${newPW}`
+            };
+            const {
+                salt,
+                hashed
+            } = await encrypt.encrypt(newPW);
+            await UserModel.updateNewPW(userEmail, hashed, salt);
+            mailer.sendGmail(emailParam);
+            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SEND_EMAIL_SUCCESS, emailParam))
+        }catch(err){
+            console.log('find PW by email mailer ERR : ',err);
+            throw err;
+        }
+    }
 }
 module.exports = user;

@@ -58,16 +58,31 @@ const main = {
     },
     updateBookmark: async (req, res) => {
         const bookstoreIdx = req.params.bookstoreIdx;
-        
         const interest = await MainModel.showInterest();
+        const userIdx = req.decoded.userIdx;
         try{
+            const interest = await MainModel.showInterest(userIdx);
             if(interest.length===0){
-                return res.status(OK).send({err: 'No Interesting Bookstore'});
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
             }else{
-                return res.status(OK).send(interest);
+                return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, interest));
             }
         }catch(err){
-            res.status(DB_ERROR).send(err);
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+    },
+    updateBookmark: async (req, res) => {
+        const bookstoreIdx = req.params.bookstoreIdx;
+        const userIdx = req.decoded.userIdx;
+        console.log(userIdx);
+        try {
+            const result = await MainModel.updateBookmark(userIdx, bookstoreIdx);
+            // if (!result.length) {
+            //     return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.))
+            // }
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_SUCCESS, {checked: result}));
+        } catch (err) {
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
 
     },
