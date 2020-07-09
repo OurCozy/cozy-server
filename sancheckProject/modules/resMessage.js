@@ -36,5 +36,8 @@ module.exports = {
     NO_DATA: '서점 리스트가 없습니다.',
     READ_DATA_SUCCESS: '서점 리스트 조회 성공',
 
+    //이메일 관련
+    SEND_EMAIL_SUCCESS: '이메일 발송 성공',
+    
     DB_ERROR: 'DB 오류'
 };

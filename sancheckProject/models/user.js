@@ -79,6 +79,29 @@ const user = {
             throw err;
         }
     },
+    findPassword: async()=>{
+        
+    },
+    findUserByEmail: async(userEmail)=>{
+        const query = `select nickname from ${table} where email=${userEmail}`;
+        try{
+            const result = pool.queryParam(query);
+            return result;
+        }catch(err){
+            console.log('find user by email ERR : ',err);
+            throw err;
+        }
+    },
+    updateNewPW: async(email, newhashed, newsalt)=>{
+        const query = `update ${table} set hashed='${newhashed}', salt='${newsalt}' where email='${email}'`;
+        try{
+            const result = pool.queryParam(query);
+            return result;
+        }catch(err){
+            console.log('update pw by email ERR : ',err);
+            throw err;
+        }
+    }
 
     // getUserByIdx: async (userIdx) => {
     //     const query = `SELECT * FROM ${table} WHERE userIdx = ${userIdx}`;
