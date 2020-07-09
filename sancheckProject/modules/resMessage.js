@@ -25,7 +25,8 @@ module.exports = {
     READ_PROFILE_SUCCESS: '프로필 조회 성공',
     READ_PROFILE_FAIL: '정보가 없습니다.',
     UNSUPPORTED_TYPE: '지원하지 않는 타입입니다.',
-
+    // 이미지 업데이트
+    UPDATE_IMAGE_SUCCESS: '이미지 업데이트 성공',
     // 프로필 업데이트
     UPDATE_PROFILE_SUCCESS: '프로필 업데이트 성공',
 

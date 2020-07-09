@@ -44,7 +44,7 @@ const main = {
         }
     },
     showInterest : async (req, res) => {
-        const userIdx=req.params.userIdx;
+        const userIdx=req.decoded.userIdx;
         try{
             const interest = await MainModel.showInterest(userIdx);
             if(interest.length===0){

@@ -75,12 +75,15 @@ const user = {
             const result = await pool.queryParam(query);
             return result;
         }catch(err){
-            console.log('insert image ERR : ',err);
-            throw err;
+            if(err.code === 'ER_DUP_ENTRY'){
+                console.log('insert image Duplicate ERR : ', err);
+                throw err;
+            }
+            else{
+                console.log('insert image ERR : ',err);
+                throw err;
+            }
         }
-    },
-    findPassword: async()=>{
-        
     },
     findUserByEmail: async(userEmail)=>{
         const query = `select nickname from ${table} where email=${userEmail}`;

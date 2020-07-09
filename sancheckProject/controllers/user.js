@@ -84,6 +84,16 @@ const user = {
         res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, {accessToken: token}));
     },
+    updateImages: async(req, res)=>{
+        const bookstoreIdx=req.params.bookstoreIdx;
+        let imageLocations=[];
+        for(var i=0;i<3;i++){
+            imageLocations[i]=req.files[i].location;
+        }
+        const result=await UserModel.updateImages(bookstoreIdx, imageLocations);
+        res.status(statusCode.OK)
+        .send(util.success(statusCode.OK, resMessage.UPDATE_IMAGE_SUCCESS, result));
+    },
     updateProfile: async (req, res) => {
         // 데이터 받아오기
         const userIdx = req.decoded.userIdx;
