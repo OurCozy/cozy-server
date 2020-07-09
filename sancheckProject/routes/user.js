@@ -3,12 +3,11 @@ const router = express.Router();
 const upload = require('../modules/multer');
 
 const UserController = require('../controllers/user');
-const ImageController = require('../controllers/image');
 const AuthMiddleware = require('../middlewares/auth');
 
 router.post('/signin', UserController.signin);
 router.post('/signup', UserController.signup);
-router.post('/uploadImage/:bookstoreIdx',upload.array('profile'),ImageController.updateImages);
+router.post('/uploadImage/:bookstoreIdx',upload.array('profile'),UserController.updateImages);
 router.post('/findpw', UserController.findPassword);
 
 /* 
