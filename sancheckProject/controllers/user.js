@@ -5,16 +5,16 @@ const resMessage = require('../modules/resMessage');
 const util = require('../modules/util');
 const jwt = require('../modules/jwt');
 const mailer = require('../modules/mailer');
-const { NULL_VALUE } = require('../modules/statusCode');
 
 const user = {
     signup : async (req, res) => {
         const {
             nickname,
+            email,
             password,
-            email
+            passwordConfirm
         } = req.body;
-        if (!nickname || !password || !email) {
+        if (!nickname || !password || !email || !passwordConfirm) {
             return res.status(statusCode.OK)
                 .send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
         }
@@ -32,6 +32,10 @@ const user = {
             .send(util.fail(statusCode.OK, resMessage.ALREADY_EMAIL));
         }
 
+        if(password !== passwordConfirm){
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.DIFFERENT_PW));
+        }
+        
         const {
             salt,
             hashed

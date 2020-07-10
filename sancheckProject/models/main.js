@@ -80,11 +80,7 @@ const bookstore = {
         }
     },
     showInterest: async (userIdx) => {
-        const query=`SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3
-        FROM ${bookstoreTable} A 
-        LEFT OUTER JOIN ${bookmarksTable} C
-        ON A.bookstoreIdx = C.bookstoreIdx
-        WHERE C.userIdx=${userIdx}`;
+        const query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3 FROM ${bookstoreTable} A, ${bookmarksTable} B WHERE B.userIdx=${userIdx} and A.bookstoreIdx=B.bookstoreIdx`;
         try{
             const result=await pool.queryParam(query);
             return result;
