@@ -40,5 +40,8 @@ module.exports = {
     //이메일 관련
     SEND_EMAIL_SUCCESS: '이메일 발송 성공',
     
+    //비밀번호 확인 관련
+    DIFFERENT_PW: '비밀번호가 다릅니다.',
+
     DB_ERROR: 'DB 오류'
 };

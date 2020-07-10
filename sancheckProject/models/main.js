@@ -1,6 +1,5 @@
 const pool = require('../modules/pool');
 const bookstoreTable = 'bookstore';
-const hashtagTable = 'hashtag';
 const imagesTable = 'images';
 const bookmarksTable = 'bookmarks';
 const userTable = 'user';
@@ -20,12 +19,7 @@ const bookstore = {
         }
     },
     showDetail: async (bookstoreIdx) => {
-        const query = `SELECT A.*, B.*, C.*
-        FROM ${bookstoreTable} A LEFT OUTER JOIN ${hashtagTable} B
-        ON A.bookstoreIdx = B.bookstoreIdx
-        LEFT OUTER JOIN ${imagesTable} C
-        ON B.bookstoreIdx = C.bookstoreIdx WHERE A.bookstoreIdx=${bookstoreIdx}`;
-
+        const query = `select * from ${bookstoreTable}, ${imagesTable} where ${bookstoreTable}.bookstoreIdx = ${bookstoreIdx} and ${imagesTable}.bookstoreIdx = ${bookstoreIdx}`;
         try { 
             const result = await pool.queryParam(query);
             return result;
@@ -35,8 +29,7 @@ const bookstore = {
         }
     },
     showLocation: async (sectionIdx) => {
-        const query1 = `SELECT b.profile, b.bookstoreName, b.location, h.hashtag FROM ${bookstoreTable} b, ${hashtagTable} h 
-                        WHERE b.sectionIdx = ${sectionIdx} AND b.bookstoreIdx = h.bookstoreIdx;`;
+        const query1 = `SELECT b.bookstoreIdx, b.profile, b.bookstoreName, b.location FROM ${bookstoreTable} b WHERE b.sectionIdx = ${sectionIdx}`;
         try {
             const result = await pool.queryParam(query1);
             return result;
@@ -81,12 +74,7 @@ const bookstore = {
         }
     },
     showInterest: async (userIdx) => {
-        const query=`SELECT A.bookstoreIdx, A.bookstoreName, A.profile, B.hashtag
-        FROM ${bookstoreTable} A LEFT OUTER JOIN ${hashtagTable} B
-        ON A.bookstoreIdx = B.bookstoreIdx
-        LEFT OUTER JOIN ${bookmarksTable} C
-        ON B.bookstoreIdx = C.bookstoreIdx
-        WHERE C.userIdx=${userIdx}`;
+        const query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3 FROM ${bookstoreTable} A, ${bookmarksTable} B WHERE B.userIdx=${userIdx} and A.bookstoreIdx=B.bookstoreIdx`;
         try{
             const result=await pool.queryParam(query);
             return result;

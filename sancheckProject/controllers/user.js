@@ -5,16 +5,16 @@ const resMessage = require('../modules/resMessage');
 const util = require('../modules/util');
 const jwt = require('../modules/jwt');
 const mailer = require('../modules/mailer');
-const { NULL_VALUE } = require('../modules/statusCode');
 
 const user = {
     signup : async (req, res) => {
         const {
             nickname,
+            email,
             password,
-            email
+            passwordConfirm
         } = req.body;
-        if (!nickname || !password || !email) {
+        if (!nickname || !password || !email || !passwordConfirm) {
             return res.status(statusCode.OK)
                 .send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
         }
@@ -32,6 +32,10 @@ const user = {
             .send(util.fail(statusCode.OK, resMessage.ALREADY_EMAIL));
         }
 
+        if(password !== passwordConfirm){
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.DIFFERENT_PW));
+        }
+        
         const {
             salt,
             hashed
@@ -50,16 +54,16 @@ const user = {
     },
     signin : async (req, res) => {
         const {
-            nickname,
+            email,
             password
         } = req.body;
-        if (!nickname || !password) {
+        if (!email || !password) {
             res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             return;
         }
     
         // User의 nickname이 있는지 확인 - 없다면 NO_USER 반납
-        const user = await UserModel.checkUserByName(nickname);
+        const user = await UserModel.checkUserByEmail(email);
         
         // statusCode: 204 => 요청에는 성공했으나 클라가 현재 페이지에서 벗어나지 않아도 된다.~~
         // 페이지는 바뀌지 않는데 리소스는 업데이트될 때 사용
