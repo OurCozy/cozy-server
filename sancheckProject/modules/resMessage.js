@@ -50,5 +50,9 @@ module.exports = {
     //비밀번호 확인 관련
     DIFFERENT_PW: '비밀번호가 다릅니다.',
 
+    // 검색 관련
+    NO_SEARCH_DATA: '검색 내역이 없습니다.',
+    SUCCESS_SEARCH: '검색 성공',
+
     DB_ERROR: 'DB 오류'
 };

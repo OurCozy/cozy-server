@@ -51,7 +51,7 @@
 # 4. ER Diagram  
 
 <div align="center" style="display:flex;">
-	<img src="https://user-images.githubusercontent.com/43127088/86874549-88b40b80-c11b-11ea-8ae8-bd70d2c0a4f2.png">
+	<img src="./sancheckProject/image/erd_modified.png">
 </div>
 
 # 5. dependencies module (package.json)

@@ -99,6 +99,17 @@ const bookstore = {
             throw err;
         }
     },
+    searchByKeyword: async (keyword) => {
+        const match = 'bookstoreName, location, activity, shortIntro, shortIntro2, description, hashtag1, hashtag2, hashtag3';
+        const query = `select bookstoreIdx, bookstoreName from ${bookstoreTable} where match (${match}) against('+${keyword}*' in boolean mode) order by bookmark desc;`
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('search by keyword ERROR : ', err);
+            throw err;
+        }                
+    },
     updateProfile: async (bookstoreIdx, profile) => {
         let query = `UPDATE ${bookstoreTable} SET profile = '${profile}' WHERE bookstoreIdx = ${bookstoreIdx}`;
         try {
