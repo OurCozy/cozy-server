@@ -12,7 +12,7 @@ const authUtil = {
             return res.json(util.fail(CODE.OK, MSG.EMPTY_TOKEN));
         }
         const user = await jwt.verify(token);
-        console.log(user);
+        // console.log(user);
         if (user === TOKEN_EXPIRED) {
             return res.json(util.fail(CODE.UNAUTHORIZED, MSG.EXPIRED_TOKEN));
         }

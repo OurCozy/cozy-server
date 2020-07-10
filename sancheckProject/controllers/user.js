@@ -48,16 +48,16 @@ const user = {
     },
     signin : async (req, res) => {
         const {
-            nickname,
+            email,
             password
         } = req.body;
-        if (!nickname || !password) {
+        if (!email || !password) {
             res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             return;
         }
     
-        // User의 nickname이 있는지 확인 - 없다면 NO_USER 반납
-        const user = await UserModel.checkUserByName(nickname);
+        // User의 email이 있는지 확인 - 없다면 NO_USER 반납
+        const user = await UserModel.checkUserByEmail(email);
         
         // statusCode: 204 => 요청에는 성공했으나 클라가 현재 페이지에서 벗어나지 않아도 된다.~~
         // 페이지는 바뀌지 않는데 리소스는 업데이트될 때 사용

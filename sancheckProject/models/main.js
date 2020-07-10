@@ -95,6 +95,16 @@ const bookstore = {
             throw err;
         }
     },
+    selectProfile: async (bookstoreIdx) => {
+        const query = `SELECT bookstoreIdx, bookstoreName, profile FROM ${bookstoreTable} WHERE bookstoreIdx = ${bookstoreIdx};`;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('select profile ERROR : ', err);
+            throw err;
+        }
+    },
 }
 
 module.exports = bookstore;

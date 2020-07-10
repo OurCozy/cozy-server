@@ -36,5 +36,12 @@ module.exports = {
     NO_DATA: '서점 리스트가 없습니다.',
     READ_DATA_SUCCESS: '서점 리스트 조회 성공',
 
+    // cookie 관련
+    COOKIE_SUCCESS: '쿠키가 저장되었습니다.',
+    COOKIE_FAIL: '쿠키 저장에 실패했습니다.',
+
+    // 최근 본 책방
+    NO_RECENT_BOOKSTORES: '최근 본 책방이 없습니다.',
+
     DB_ERROR: 'DB 오류'
 };
