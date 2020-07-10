@@ -2,15 +2,13 @@ const MainModel = require('../models/main'); // 스키마 불러오기
 const statusCode = require('../modules/statusCode');
 const resMessage = require('../modules/resMessage');
 const util = require('../modules/util');
-const pool = require('../modules/pool');
-const bookstore = require('../models/main');
 
 var count = 0;
 var obj = [];
 
 const main = {
     showRecommendation : async (req, res) => {
-        // const userIdx = req.decoded.userIdx;
+        const userIdx = req.decoded.userIdx;
         const bookstore = await MainModel.showRecommendation();
         try {
             if (!bookstore.length) {
@@ -22,7 +20,7 @@ const main = {
         }
     },
     showDetail : async (req, res) => {
-        // const userIdx = req.decoded.userIdx;
+        const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         const bookstore = await MainModel.showDetail(bookstoreIdx);
         // console.log(bookstore);
@@ -51,21 +49,6 @@ const main = {
         }
     },
     showInterest : async (req, res) => {
-        const userIdx=req.decoded.userIdx;
-        try{
-            const interest = await MainModel.showInterest(userIdx);
-            if(interest.length===0){
-                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
-            }else{
-                return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, interest));
-            }
-        }catch(err){
-            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
-        }
-    },
-    updateBookmark: async (req, res) => {
-        const bookstoreIdx = req.params.bookstoreIdx;
-        const interest = await MainModel.showInterest();
         const userIdx = req.decoded.userIdx;
         try{
             const interest = await MainModel.showInterest(userIdx);
@@ -129,7 +112,8 @@ const main = {
          * httpOnly: HTTP 프로토콜만 쿠키 사용 가능
          * signed: 쿠키의 서명 여부를 결정
          *  */ 
-    
+
+        const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         var bookstores = req.cookies.bookstores;
 
@@ -174,6 +158,7 @@ const main = {
         // res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.COOKIE_SUCCESS, obj.reverse()));
     },
     showRecent : async (req, res) => {
+        const userIdx = req.decoded.userIdx;
         var bookstores = req.cookies.bookstores;
 
         if (!req.cookies.bookstores) {
@@ -202,6 +187,26 @@ const main = {
             // }
         }
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.COOKIE_SUCCESS, obj.reverse().slice(0,10)));
+    },
+    updateProfile: async (req, res) => {
+        // 데이터 받아오기
+        const userIdx = req.decoded.userIdx;
+        const bookstoreIdx = req.params.bookstoreIdx;
+        const profile = req.file.location;
+
+        // data check - undefined
+        if (profile === undefined || !bookstoreIdx) {
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
+        }
+        // image type check
+        const type = req.file.mimetype.split('/')[1];
+        if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.UNSUPPORTED_TYPE));
+        }
+        // call model - database
+        // 결과값은 프로필에 대한 이미지 전달
+        const result = await MainModel.updateProfile(bookstoreIdx, profile);
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_PROFILE_SUCCESS, result));
     },
 }
 

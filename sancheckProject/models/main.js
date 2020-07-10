@@ -1,16 +1,16 @@
 const pool = require('../modules/pool');
 const bookstoreTable = 'bookstore';
-const hashtagTable = 'hashtag';
+// const hashtagTable = 'hashtag';
 const imagesTable = 'images';
 const bookmarksTable = 'bookmarks';
 const userTable = 'user';
 
 const bookstore = {
     showRecommendation: async () => {
-        const fields = 'shortIntro, shortIntro2, bookstoreName, location, bookmark';
+        const fields = 'bookstoreIdx, profile, shortIntro, shortIntro2, bookstoreName, location';
         // const questions = `?, ?, ?, ?, ?`;
         // const values = [id, name, password, salt, email];
-        const query = `SELECT ${fields} FROM ${bookstoreTable} WHERE shortIntro IS NOT NULL ORDER BY bookmark DESC LIMIT 8;`;
+        const query = `SELECT ${fields} FROM ${bookstoreTable} WHERE profile != 'NULL' AND shortIntro != 'NULL' ORDER BY bookmark DESC LIMIT 8;`;
         try {
             const result = await pool.queryParam(query);
             return result;
@@ -20,11 +20,10 @@ const bookstore = {
         }
     },
     showDetail: async (bookstoreIdx) => {
-        const query = `SELECT A.*, B.*, C.*
-        FROM ${bookstoreTable} A LEFT OUTER JOIN ${hashtagTable} B
-        ON A.bookstoreIdx = B.bookstoreIdx
+        const query = `SELECT A.*, C.image1, image2, image3
+        FROM ${bookstoreTable} A
         LEFT OUTER JOIN ${imagesTable} C
-        ON B.bookstoreIdx = C.bookstoreIdx WHERE A.bookstoreIdx=${bookstoreIdx}`;
+        ON A.bookstoreIdx = C.bookstoreIdx WHERE A.bookstoreIdx=${bookstoreIdx}`;
 
         try { 
             const result = await pool.queryParam(query);
@@ -35,8 +34,8 @@ const bookstore = {
         }
     },
     showLocation: async (sectionIdx) => {
-        const query1 = `SELECT b.profile, b.bookstoreName, b.location, h.hashtag FROM ${bookstoreTable} b, ${hashtagTable} h 
-                        WHERE b.sectionIdx = ${sectionIdx} AND b.bookstoreIdx = h.bookstoreIdx;`;
+        const query1 = `SELECT sectionIdx, bookstoreIdx, profile, bookstoreName, location, hashtag1, hashtag2, hashtag3 FROM ${bookstoreTable}
+                        WHERE sectionIdx = ${sectionIdx};`;
         try {
             const result = await pool.queryParam(query1);
             return result;
@@ -81,11 +80,10 @@ const bookstore = {
         }
     },
     showInterest: async (userIdx) => {
-        const query=`SELECT A.bookstoreIdx, A.bookstoreName, A.profile, B.hashtag
-        FROM ${bookstoreTable} A LEFT OUTER JOIN ${hashtagTable} B
-        ON A.bookstoreIdx = B.bookstoreIdx
+        const query=`SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3
+        FROM ${bookstoreTable} A 
         LEFT OUTER JOIN ${bookmarksTable} C
-        ON B.bookstoreIdx = C.bookstoreIdx
+        ON A.bookstoreIdx = C.bookstoreIdx
         WHERE C.userIdx=${userIdx}`;
         try{
             const result=await pool.queryParam(query);
@@ -105,6 +103,22 @@ const bookstore = {
             throw err;
         }
     },
+    updateProfile: async (bookstoreIdx, profile) => {
+        let query = `UPDATE ${bookstoreTable} SET profile = '${profile}' WHERE bookstoreIdx = ${bookstoreIdx}`;
+        try {
+            await pool.queryParam(query);
+            query = `SELECT bookstoreIdx, bookstoreName, profile FROM ${bookstoreTable} WHERE bookstoreIdx = ${bookstoreIdx}`;
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            if (err.errno == 1062) {
+                console.log('update profile ERROR : ', err.errno, err.code);
+                throw err;
+            }
+            console.log('update profile ERROR : ', err);
+            throw err;
+        }
+    }
 }
 
 module.exports = bookstore;
