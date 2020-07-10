@@ -1,9 +1,9 @@
 const pool = require('../modules/pool');
 const bookstoreTable = 'bookstore';
-// const hashtagTable = 'hashtag';
 const imagesTable = 'images';
 const bookmarksTable = 'bookmarks';
 const userTable = 'user';
+const review = '';
 
 const bookstore = {
     showRecommendation: async () => {
