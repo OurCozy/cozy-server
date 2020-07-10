@@ -75,10 +75,35 @@ const user = {
             const result = await pool.queryParam(query);
             return result;
         }catch(err){
-            console.log('insert image ERR : ',err);
+            if(err.code === 'ER_DUP_ENTRY'){
+                console.log('insert image Duplicate ERR : ',err);
+                return '해당 서점의 이미지는 이미 등록되어있습니다.';
+            }else{
+                console.log('insert image ERR : ',err);
+                throw err;
+            }
+        }
+    },
+    findUserByEmail: async(userEmail)=>{
+        const query = `select nickname from ${table} where email=${userEmail}`;
+        try{
+            const result = pool.queryParam(query);
+            return result;
+        }catch(err){
+            console.log('find user by email ERR : ',err);
             throw err;
         }
     },
+    updateNewPW: async(email, newhashed, newsalt)=>{
+        const query = `update ${table} set hashed='${newhashed}', salt='${newsalt}' where email='${email}'`;
+        try{
+            const result = pool.queryParam(query);
+            return result;
+        }catch(err){
+            console.log('update pw by email ERR : ',err);
+            throw err;
+        }
+    }
 
     // getUserByIdx: async (userIdx) => {
     //     const query = `SELECT * FROM ${table} WHERE userIdx = ${userIdx}`;

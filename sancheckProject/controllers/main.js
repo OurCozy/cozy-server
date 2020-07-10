@@ -51,6 +51,21 @@ const main = {
         }
     },
     showInterest : async (req, res) => {
+        const userIdx=req.decoded.userIdx;
+        try{
+            const interest = await MainModel.showInterest(userIdx);
+            if(interest.length===0){
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
+            }else{
+                return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, interest));
+            }
+        }catch(err){
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+    },
+    updateBookmark: async (req, res) => {
+        const bookstoreIdx = req.params.bookstoreIdx;
+        const interest = await MainModel.showInterest();
         const userIdx = req.decoded.userIdx;
         try{
             const interest = await MainModel.showInterest(userIdx);
