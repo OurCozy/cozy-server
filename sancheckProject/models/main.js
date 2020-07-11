@@ -3,7 +3,7 @@ const bookstoreTable = 'bookstore';
 const imagesTable = 'images';
 const bookmarksTable = 'bookmarks';
 const userTable = 'user';
-const review = '';
+const reviewTable = 'review';
 
 const bookstore = {
     showRecommendation: async () => {
@@ -23,7 +23,7 @@ const bookstore = {
         const query = `SELECT A.*, C.image1, image2, image3
         FROM ${bookstoreTable} A
         LEFT OUTER JOIN ${imagesTable} C
-        ON A.bookstoreIdx = C.bookstoreIdx WHERE A.bookstoreIdx=${bookstoreIdx}`;
+        ON A.bookstoreIdx = C.bookstoreIdx WHERE A.bookstoreIdx=${bookstoreIdx} `;
 
         try { 
             const result = await pool.queryParam(query);
@@ -54,9 +54,11 @@ const bookstore = {
             // INSERT INTO 테이블명 (COLUMN_LIST) VALUES (COLUMN_LIST에 넣을 VALUE_LIST);
             const updateQuery = `INSERT INTO ${bookmarksTable} (${fields}) VALUES (${questions});`
             const deleteQuery = `DELETE FROM ${bookmarksTable} WHERE userIdx = '${userIdx}' AND bookstoreIdx = '${bookstoreIdx}';`;
+            // bookstore 테이블 업데이트 되게 수정
             let result = await pool.queryParam(selectQuery);
             if (result.length === 0) {
                 result = await pool.queryParamArr(updateQuery, values);
+                
                 // const insertId = result.insertId;
                 return 1;
             } else {
@@ -80,7 +82,8 @@ const bookstore = {
         }
     },
     showInterest: async (userIdx) => {
-        const query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3 FROM ${bookstoreTable} A, ${bookmarksTable} B WHERE B.userIdx=${userIdx} and A.bookstoreIdx=B.bookstoreIdx`;
+        const query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3, C.nickname FROM ${bookstoreTable} A, ${bookmarksTable} B, ${userTable} C 
+                        WHERE B.userIdx=${userIdx} and A.bookstoreIdx=B.bookstoreIdx and B.userIdx = C.userIdx;`;
         try{
             const result=await pool.queryParam(query);
             return result;
@@ -90,7 +93,8 @@ const bookstore = {
         }
     },
     selectProfile: async (bookstoreIdx) => {
-        const query = `SELECT bookstoreIdx, bookstoreName, profile FROM ${bookstoreTable} WHERE bookstoreIdx = ${bookstoreIdx};`;
+        const query = `SELECT b.bookstoreIdx, b.bookstoreName, b.profile, i.image1 FROM ${bookstoreTable} b, ${imagesTable} i
+                         WHERE b.bookstoreIdx = ${bookstoreIdx} AND b.bookstoreIdx = i.bookstoreIdx;`;
         try {
             const result = await pool.queryParam(query);
             return result;
@@ -101,7 +105,8 @@ const bookstore = {
     },
     searchByKeyword: async (keyword) => {
         const match = 'bookstoreName, location, activity, shortIntro, shortIntro2, description, hashtag1, hashtag2, hashtag3';
-        const query = `select bookstoreIdx, bookstoreName from ${bookstoreTable} where match (${match}) against('+${keyword}*' in boolean mode) order by bookmark desc;`
+        const query = `select bookstoreIdx, bookstoreName, location, activity, shortIntro, shortIntro2, description, hashtag1, hashtag2, hashtag3
+                         from ${bookstoreTable} where match (${match}) against('+${keyword}*' in boolean mode) order by bookmark desc;`
         try {
             const result = await pool.queryParam(query);
             return result;

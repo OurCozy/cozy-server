@@ -11,17 +11,20 @@ const AuthMiddleware = require('../middlewares/auth');
  */
 router.get('/recommendation', AuthMiddleware.checkToken, mainController.showRecommendation);
 router.get('/detail/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showDetail);
+
 /**
  * 📌 지도 탭
  * 지역별 조회, 상세 뷰 
  */
 router.get('/map/:sectionIdx', AuthMiddleware.checkToken, mainController.showLocation);
+
 /**
  * 📌 관심 탭
  * 관심 책방 조회, 북마크 업데이트
  */
 router.get('/interest', AuthMiddleware.checkToken, mainController.showInterest);
 router.put('/interest/:bookstoreIdx', AuthMiddleware.checkToken, mainController.updateBookmark);
+
 /**
  * 📌 내 정보 탭
  * 내 정보 조회, 내가 쓴 후기 조회, 작성, 최근 본 책방 조회
@@ -29,8 +32,6 @@ router.put('/interest/:bookstoreIdx', AuthMiddleware.checkToken, mainController.
 router.get('/mypage', AuthMiddleware.checkToken, mainController.showMypage);
 router.get('/mypage/review', AuthMiddleware.checkToken, mainController.showMyReview);
 router.post('/detail/review', AuthMiddleware.checkToken, mainController.writeReview);
-// 메인 뷰에서 책방 사진 누르면 setRecent 처리 -> res.redirect로 showDetail로 돌아감(?)
-router.get('/recent/:bookstoreIdx', AuthMiddleware.checkToken, mainController.setRecent);
 router.get('/recent', AuthMiddleware.checkToken, mainController.showRecent);
 
 /** 

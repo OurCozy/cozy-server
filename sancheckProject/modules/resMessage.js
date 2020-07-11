@@ -52,6 +52,7 @@ module.exports = {
 
     // 검색 관련
     NO_SEARCH_DATA: '검색 내역이 없습니다.',
+    NO_KEYWORD: '검색어를 입력하세요.',
     SUCCESS_SEARCH: '검색 성공',
 
     DB_ERROR: 'DB 오류'
