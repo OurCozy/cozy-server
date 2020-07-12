@@ -19,37 +19,66 @@ const bookstore = {
             throw err;
         }
     },
-    showDetail: async (bookstoreIdx) => {
-        const query = `SELECT A.*, C.image1, image2, image3
-        FROM ${bookstoreTable} A
-        LEFT OUTER JOIN ${imagesTable} C
-        ON A.bookstoreIdx = C.bookstoreIdx WHERE A.bookstoreIdx=${bookstoreIdx} `;
+    showDetail: async (userIdx, bookstoreIdx) => {
 
-        try { 
+        const bookmarkQuery = `SELECT * FROM ${bookmarksTable} WHERE bookstoreIdx = ${bookstoreIdx} AND userIdx = ${userIdx};`;
+        const query = `select bs.*, i.image1, i.image2, i.image3 from ${bookstoreTable} bs, ${imagesTable} i, ${userTable} u
+        where bs.bookstoreIdx = i.bookstoreIdx and bs.bookstoreIdx = ${bookstoreIdx} and u.useridx = ${userIdx};`;
+
+        try {
+            const bookmarkResult = await pool.queryParam(bookmarkQuery);
+            if (bookmarkResult.length === 0) {
+                var checked = 0;
+            } else checked = 1;
             const result = await pool.queryParam(query);
+            result[0].checked = checked;
             return result;
         } catch (err) {
             console.log('showRecommendation ERROR : ', err);
             throw err;
         }
     },
-    showLocation: async (sectionIdx) => {
-        const query1 = `SELECT sectionIdx, bookstoreIdx, profile, bookstoreName, location, hashtag1, hashtag2, hashtag3 FROM ${bookstoreTable}
-                        WHERE sectionIdx = ${sectionIdx};`;
+    showLocation: async (userIdx, sectionIdx) => {
+        const locationQuery = `SELECT * FROM ${bookstoreTable} WHERE sectionIdx = ${sectionIdx};`;
+        const countQuery = `select count(*) as cnt from ${bookstoreTable} where sectionIdx = ${sectionIdx};`;
+        const bookmarkQuery = `SELECT * from ${bookstoreTable} bs, ${bookmarksTable} bm WHERE bs.bookstoreIdx = bm.bookstoreIdx and bm.userIdx = ${userIdx} and bs.sectionIdx = ${sectionIdx};`;
+        var checked = 0;
         try {
-            const result = await pool.queryParam(query1);
-            return result;
+            let locationResult = await pool.queryParam(locationQuery);
+            for (var i in locationResult) {
+                const countResult = await pool.queryParam(countQuery);
+                var count = countResult[0].cnt;
+                locationResult[i].count = count;
+
+                let result = await pool.queryParam(bookmarkQuery);
+                if (result.length === 0) {
+                    checked = 0;
+                    locationResult[i].checked = checked;
+                }
+                for (var c in result) {
+                    if (result[c].bookstoreIdx === locationResult[i].bookstoreIdx) {
+                        checked = 1;
+                    } else {
+                        checked = 0;
+                    }
+                    locationResult[i].checked = checked;
+                }   
+            }
+            
+            const countResult = await pool.queryParam(countQuery);
+            var count = countResult[0].cnt;
+            locationResult[0].count = count;
+            return locationResult;
         } catch (err) {
-            console.log('showLocation ERROR : ', err);
+            console.log('show location ERROR : ', err);
             throw err;
         }
     },
     updateBookmark: async (userIdx, bookstoreIdx) => {
         const selectQuery = `SELECT * FROM ${bookmarksTable} WHERE userIdx = '${userIdx}' AND bookStoreIdx = '${bookstoreIdx}';`;
         // 존재하면 delete, 존재 x면 update
-        const fields = 'userIdx, bookstoreIdx';
-        const questions = '?, ?';
-        const values = [userIdx, bookstoreIdx];
+        const fields = 'userIdx, bookstoreIdx, sectionIdx';
+        const questions = '?, ?, ?';
         try {
             // INSERT INTO 테이블명 (COLUMN_LIST) VALUES (COLUMN_LIST에 넣을 VALUE_LIST);
             const updateQuery = `INSERT INTO ${bookmarksTable} (${fields}) VALUES (${questions});`
@@ -57,8 +86,12 @@ const bookstore = {
             // bookstore 테이블 업데이트 되게 수정
             let result = await pool.queryParam(selectQuery);
             if (result.length === 0) {
+                const findSectionIDx = `SELECT sectionIdx FROM ${bookstoreTable} WHERE bookstoreIdx = ${bookstoreIdx};`;
+                result = await pool.queryParam(findSectionIDx);
+                var sectionIdx = result[0].sectionIdx;
+                console.log('sectionIdx: ',sectionIdx);
+                const values = [userIdx, bookstoreIdx, sectionIdx];
                 result = await pool.queryParamArr(updateQuery, values);
-                
                 // const insertId = result.insertId;
                 return 1;
             } else {
@@ -82,10 +115,10 @@ const bookstore = {
         }
     },
     showInterest: async (userIdx) => {
-        const query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3, C.nickname FROM ${bookstoreTable} A, ${bookmarksTable} B, ${userTable} C 
+        let query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3, C.nickname FROM ${bookstoreTable} A, ${bookmarksTable} B, ${userTable} C 
                         WHERE B.userIdx=${userIdx} and A.bookstoreIdx=B.bookstoreIdx and B.userIdx = C.userIdx;`;
         try{
-            const result=await pool.queryParam(query);
+            let result = await pool.queryParam(query);
             return result;
         }catch(err){
             console.log('showInterest ERROR : ', err);
@@ -128,6 +161,16 @@ const bookstore = {
                 throw err;
             }
             console.log('update profile ERROR : ', err);
+            throw err;
+        }
+    },
+    selectNickname: async (userIdx) => {
+        let query = `SELECT * FROM ${userTable} WHERE userIdx = ${userIdx};`;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('search by keyword ERROR : ', err);
             throw err;
         }
     }

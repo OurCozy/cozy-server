@@ -60,24 +60,24 @@ const main = {
 
         // res.redirect(`/main/detail/${bookstoreIdx}`); // 위치 지정해서 detail 뷰로 가능
 
-        const bookstore = await MainModel.showDetail(bookstoreIdx);
-        // console.log(bookstore);
+        const bookstore = await MainModel.showDetail(userIdx, bookstoreIdx);
+        console.log(bookstore);
         try {
             if (bookstore.length === 0) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
             }
-            else return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, bookstore));
+            else 
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, bookstore));
         } catch (err) {
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
-
     },
     showLocation : async (req, res) => {
         const sectionIdx = req.params.sectionIdx;
         const userIdx = req.decoded.userIdx;
-        console.log(sectionIdx);
+        console.log('sectionIdx: ',sectionIdx);
         try {
-            const bookstoreBySection = await MainModel.showLocation(sectionIdx);
+            const bookstoreBySection = await MainModel.showLocation(userIdx, sectionIdx);
             if (!bookstoreBySection.length) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
             }
@@ -91,7 +91,16 @@ const main = {
         try{
             const interest = await MainModel.showInterest(userIdx);
             if(interest.length===0){
-                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
+                const nickname = await MainModel.selectNickname(userIdx);
+                return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_DATA, {
+                    bookstoreIdx: 0,
+                    bookstoreName: "NULL",
+                    profile: "NULL",
+                    hashtag1: "NULL",
+                    hashtag2: "NULL",
+                    hashtag3: "NULL",
+                    nickname: nickname[0].nickname
+                }));
             }else{
                 return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, interest));
             }
@@ -102,7 +111,7 @@ const main = {
     updateBookmark: async (req, res) => {
         const bookstoreIdx = req.params.bookstoreIdx;
         const userIdx = req.decoded.userIdx;
-        console.log(userIdx);
+        // console.log(userIdx);
         try {
             const result = await MainModel.updateBookmark(userIdx, bookstoreIdx);
             // if (!result.length) {
