@@ -36,6 +36,7 @@
 * 키워드 검색
 * 최근 본 책방 조회
 
+
 # 2 - 1 Function detail
 
 <div align="center" style="display:flex;">
