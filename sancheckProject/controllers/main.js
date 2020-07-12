@@ -47,27 +47,51 @@ const main = {
         
         // parseInt(bookstoreIdx): integer 타입으로 형변환
         const result = await MainModel.selectProfile(bookstoreIdx);
-        // console.log("result: ", result[0]);
+        console.log("result: ", result[0]);
+
+        console.log('bb: ', bookstores);
+        console.log('result[0].bookstoreIdx: ', result[0].bookstoreIdx);
+        // console.log('bookstores[i][0].bookstoreIdx: ',bookstores[count][0].bookstoreIdx);
+
+        // 서점 리스트가 없을 경우
         if (result[0] !== undefined) {
+            var flag = 0;
             bookstores[count++] = result;
+            // 쿠키가 비어있지 않고
+            // if (bookstores !== {}) {
+            //     for (var i in bookstores) {
+            //         if (result[0].bookstoreIdx !== bookstores[i][0].bookstoreIdx) {
+            //             // console.log('bbb:', bookstores[i][0].bookstoreIdx);
+            //             flag = 0;
+            //             console.log('success!', flag);
+            //             break;
+            //         } else {
+            //             flag = 1;
+            //             console.log('fail!', flag);
+            //         }
+            //     }
+            // }
+            // if (flag === 1)
+            //     bookstores[count++] = result;
         }
 
-        // obj.reverse().slice(0,10);
-
         res.cookie('bookstores', bookstores, {
-            maxAge: 60*60*1000*24 // 24h
+            // maxAge: 60*60*1000*12 // 12h
+            // 최대로 저장할 수 있는 쿠키 개수가 정해져 있나?
+            maxAge: 100000
         });
+
+        // console.log(bookstores);
 
         // res.redirect(`/main/detail/${bookstoreIdx}`); // 위치 지정해서 detail 뷰로 가능
 
         const bookstore = await MainModel.showDetail(userIdx, bookstoreIdx);
-        console.log(bookstore);
+        // console.log(bookstore);
         try {
             if (bookstore.length === 0) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
             }
-            else 
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, bookstore));
+            else return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, bookstore));
         } catch (err) {
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
@@ -166,6 +190,8 @@ const main = {
         if (!req.cookies.bookstores) {
             return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_RECENT_BOOKSTORES));
         }
+
+        console.log(bookstores);
 
         // json 객체 담을 배열
         for (var i in bookstores) {

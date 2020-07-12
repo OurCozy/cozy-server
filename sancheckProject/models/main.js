@@ -20,7 +20,6 @@ const bookstore = {
         }
     },
     showDetail: async (userIdx, bookstoreIdx) => {
-
         const bookmarkQuery = `SELECT * FROM ${bookmarksTable} WHERE bookstoreIdx = ${bookstoreIdx} AND userIdx = ${userIdx};`;
         const query = `select bs.*, i.image1, i.image2, i.image3 from ${bookstoreTable} bs, ${imagesTable} i, ${userTable} u
         where bs.bookstoreIdx = i.bookstoreIdx and bs.bookstoreIdx = ${bookstoreIdx} and u.useridx = ${userIdx};`;
@@ -39,7 +38,7 @@ const bookstore = {
         }
     },
     showLocation: async (userIdx, sectionIdx) => {
-        const locationQuery = `SELECT * FROM ${bookstoreTable} WHERE sectionIdx = ${sectionIdx};`;
+        const locationQuery = `SELECT bs.bookstoreIdx, bs.sectionIdx, bs.bookstoreName, bs.hashtag1, bs.hashtag2, bs.hashtag3, bs.profile, i.image1 FROM ${bookstoreTable} bs, ${imagesTable} i WHERE bs.sectionIdx = ${sectionIdx} AND bs.bookstoreIdx = i.bookstoreIdx;`;
         const countQuery = `select count(*) as cnt from ${bookstoreTable} where sectionIdx = ${sectionIdx};`;
         const bookmarkQuery = `SELECT * from ${bookstoreTable} bs, ${bookmarksTable} bm WHERE bs.bookstoreIdx = bm.bookstoreIdx and bm.userIdx = ${userIdx} and bs.sectionIdx = ${sectionIdx};`;
         var checked = 0;
@@ -115,8 +114,8 @@ const bookstore = {
         }
     },
     showInterest: async (userIdx) => {
-        let query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3, C.nickname FROM ${bookstoreTable} A, ${bookmarksTable} B, ${userTable} C 
-                        WHERE B.userIdx=${userIdx} and A.bookstoreIdx=B.bookstoreIdx and B.userIdx = C.userIdx;`;
+        let query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3, C.nickname, i.image1 FROM ${bookstoreTable} A, ${bookmarksTable} B, ${userTable} C, ${imagesTable} i 
+                        WHERE B.userIdx=${userIdx} and A.bookstoreIdx=B.bookstoreIdx and B.userIdx = C.userIdx and A.bookstoreIdx = i.bookstoreIdx;`;
         try{
             let result = await pool.queryParam(query);
             return result;
@@ -138,8 +137,8 @@ const bookstore = {
     },
     searchByKeyword: async (keyword) => {
         const match = 'bookstoreName, location, activity, shortIntro, shortIntro2, description, hashtag1, hashtag2, hashtag3';
-        const query = `select bookstoreIdx, bookstoreName, location, activity, shortIntro, shortIntro2, description, hashtag1, hashtag2, hashtag3
-                         from ${bookstoreTable} where match (${match}) against('+${keyword}*' in boolean mode) order by bookmark desc;`
+        const query = `select bookstoreIdx, ${match} from ${bookstoreTable} 
+                        where match (${match}) against('+${keyword}*' in boolean mode) order by bookmark desc;`
         try {
             const result = await pool.queryParam(query);
             return result;
