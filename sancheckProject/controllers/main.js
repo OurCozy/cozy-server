@@ -5,10 +5,13 @@ const util = require('../modules/util');
 
 var count = 0;
 var obj = [];
+var reviewPhoto = "NULL";
 
 const main = {
     showRecommendation : async (req, res) => {
-        const userIdx = req.decoded.userIdx;
+        // const userIdx = req.decoded.userIdx;
+        var autoLogin = req.cookies.autoLogin;
+        console.log(autoLogin);
         const bookstore = await MainModel.showRecommendation();
         try {
             if (!bookstore.length) {
@@ -174,16 +177,25 @@ const main = {
     },
     writeReview : async (req, res) => {
         const userIdx = req.decoded.userIdx;
-        let {bookstoreIdx, content, photo, stars} = req.body;
+        let {bookstoreIdx, content, stars} = req.body;
         try{
-            if(photo === undefined){
-                photo = null;
+            console.log('reviewPhoto: ', reviewPhoto);
+            if (!bookstoreIdx || !content || !stars) {
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             }
-            const result = await MainModel.writeReview(userIdx, bookstoreIdx, content, photo, stars);
+            const result = await MainModel.writeReview(userIdx, bookstoreIdx, content, reviewPhoto, stars);
             if(result === undefined){
                 res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ERROR_IN_INSERT_REVIEW));
             }else{
-                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.INSERT_REVIEW_SUCCESS, {reviewIdx: result, userIdx:userIdx, bookstoreIdx:bookstoreIdx, stars: stars, content:content}));
+                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.INSERT_REVIEW_SUCCESS, 
+                    {
+                        reviewIdx: result, 
+                        userIdx: userIdx,
+                        bookstoreIdx: bookstoreIdx,
+                        stars: stars, 
+                        content: content,
+                        photo: reviewPhoto
+                    }));
             }
         }catch(err){
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
@@ -195,9 +207,24 @@ const main = {
         try{
             const result = await MainModel.showAllReview(bookstoreIdx);
             if(result.length === 0){
-                res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
             }else{
-                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SELECT_REVIEW, result));
+                return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SELECT_REVIEW, result));
+            }
+        }catch(err){
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+    },
+    showTwoReviews: async(req, res) => {
+        const userIdx = req.decoded.userIdx;
+        const bookstoreIdx = req.params.bookstoreIdx;
+        try {
+            const result = await MainModel.showAllReview(bookstoreIdx);
+            console.log(result);
+            if (result.length === 0) {
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
+            } else{
+                return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SELECT_REVIEW, result.slice(0,2)));
             }
         }catch(err){
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
@@ -221,7 +248,7 @@ const main = {
         let {stars, content, photo}= req.body;
         try{
             if(photo === undefined){
-                photo=null;
+                photo = null;
             }
             const result = await MainModel.updateReview(reviewIdx, stars, content, photo);
             if(result === 1){
@@ -304,6 +331,31 @@ const main = {
         const result = await MainModel.updateProfile(bookstoreIdx, profile);
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_PROFILE_SUCCESS, result));
     },
+    updateReviewPhoto: async (req, res) => {
+        const bookstoreIdx = req.params.bookstoreIdx;
+        if(req.file === undefined) {
+            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.FAIL_UPDATE_REVIEW_PHOTO, {reveiwPhoto: reviewPhoto}));
+        }
+        console.log('req.file: ', req.file);
+        reviewPhoto = req.file.location;
+
+        // data check - undefined
+        if (reviewPhoto === undefined || !bookstoreIdx) {
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
+        }
+        // image type check
+        const type = req.file.mimetype.split('/')[1];
+        if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.UNSUPPORTED_TYPE));
+        }
+        // call model - database
+        // 결과값은 프로필에 대한 이미지 전달
+        // const result = await MainModel.updateReviewPhoto(bookstoreIdx, reviewPhoto);
+        
+        // res.redirect(`/main/detail/${bookstoreIdx}`); // 위치 지정해서 detail 뷰로 가능
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SUCCESS_UPDATE_REVIEW_PHOTO, {reviewPhoto: reviewPhoto}));
+
+    }
 }
 
 module.exports = main;

@@ -9,7 +9,7 @@ const AuthMiddleware = require('../middlewares/auth');
  * 📌 추천 탭
  * 메인 뷰, 상세 뷰
  */
-router.get('/recommendation', AuthMiddleware.checkToken, mainController.showRecommendation);
+router.get('/recommendation', mainController.showRecommendation);
 router.get('/detail/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showDetail);
 
 /**
@@ -27,11 +27,12 @@ router.put('/interest/:bookstoreIdx', AuthMiddleware.checkToken, mainController.
 
 /**
  * 📌 내 정보 탭
- * 내 정보 조회, 내가 쓴 후기 조회, 작성, 최근 본 책방 조회
+ * 내 정보 조회, 내가 쓴 후기 조회, 작성, 사진 업데이트, 최근 본 책방 조회
  */
 router.get('/mypage', AuthMiddleware.checkToken, mainController.showMypage);
 router.get('/mypage/review', AuthMiddleware.checkToken, mainController.showMyReview);
 router.post('/detail/review', AuthMiddleware.checkToken, mainController.writeReview);
+router.post('/detail/review/:bookstoreIdx', AuthMiddleware.checkToken, upload.single('reviewPhoto'), mainController.updateReviewPhoto);
 router.get('/recent', AuthMiddleware.checkToken, mainController.showRecent);
 
 /** 
@@ -43,6 +44,7 @@ router.get('/search/:keyword', AuthMiddleware.checkToken, mainController.search)
  * 📌 후기
  */
 router.get('/detail/review/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showAllReview);
+router.get('/detail/review2/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showTwoReviews);
 router.put('/update/review/:reviewIdx', AuthMiddleware.checkToken, mainController.updateReview);
 router.delete('/delete/review/:reviewIdx', AuthMiddleware.checkToken, mainController.deleteReview);
 
