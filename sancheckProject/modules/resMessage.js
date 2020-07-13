@@ -55,5 +55,15 @@ module.exports = {
     NO_KEYWORD: '검색어를 입력하세요.',
     SUCCESS_SEARCH: '검색 성공',
 
+    //후기 관련
+    INSERT_REVIEW_SUCCESS: '후기가 작성되었습니다.',
+    ERROR_IN_INSERT_REVIEW: '후기 작성이 실패하였습니다.',
+    NO_REVIEW: '작성된 후기가 없습니다.',
+    SELECT_REVIEW: '후기 조회 성공',
+    DELETE_REVIEW: '후기 삭제 성공',
+    ERROR_IN_DELETE_REVIEW: '후기 삭제 실패',
+    UPDATE_REVIEW: '후기 수정 성공',
+    ERROR_IN_UPDATE_REVIEW: '후기 수정 실패',
+    
     DB_ERROR: 'DB 오류'
 };

@@ -172,6 +172,57 @@ const bookstore = {
             console.log('search by keyword ERROR : ', err);
             throw err;
         }
+    },
+    writeReview: async(userIdx, bookstoreIdx, content, photo, stars)=>{
+        const fields = 'userIdx, bookstoreIdx, content, photo, stars, createdAt';
+        let query = `insert into ${reviewTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, '${content}', '${photo}', ${stars}, NOW())`;
+        try{
+            const result = await pool.queryParam(query);
+            return result.insertId;
+        }catch(err){
+            console.log('writeReview ERROR : ',err);
+            throw err;
+        }
+    },
+    showMyReview: async(userIdx)=>{
+        const query = `select * from ${reviewTable} where userIdx = ${userIdx} order by createdAt DESC`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch(err){
+            console.log('showMyReview ERROR : ',err);
+            throw err;
+        }
+    },
+    showAllReview: async(bookstoreIdx)=>{
+        const query = `select * from ${reviewTable} where bookstoreIdx = ${bookstoreIdx} order by createdAt DESC`;
+        try{
+            const result = await pool.queryParam(query);
+            return 1;
+        }catch(err){
+            console.log('showAllReview ERROR : ',err);
+            throw err;
+        }
+    },
+    deleteReview: async(reviewIdx)=>{
+        const query = `delete from ${reviewTable} where reviewIdx=${reviewIdx}`;
+        try{
+            await pool.queryParam(query);
+            return 1;
+        }catch(err){
+            console.log('deleteReview ERROR : ',err);
+            throw err;
+        }
+    },
+    updateReview: async(reviewIdx, stars, content, photo)=>{
+        const query = `update ${reviewTable} set stars =${stars}, content = '${content}', photo='${photo}' where reviewIdx=${reviewIdx}`;
+        try{
+            await pool.queryParam(query);
+            return 1;
+        }catch(err){
+            console.log('updateReview ERROR : ',err);
+            throw err;
+        }
     }
 }
 

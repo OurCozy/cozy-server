@@ -160,10 +160,78 @@ const main = {
         }
     },
     showMyReview : async (req, res) => {
+        const userIdx = req.decoded.userIdx;
+        try{
+            const result = await MainModel.showMyReview(userIdx);
+            if(result.length === 0){
+                res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
+            }
+            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SELECT_REVIEW, result));
 
+        }catch(err){
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
     },
     writeReview : async (req, res) => {
-
+        const userIdx = req.decoded.userIdx;
+        let {bookstoreIdx, content, photo, stars} = req.body;
+        try{
+            if(photo === undefined){
+                photo = null;
+            }
+            const result = await MainModel.writeReview(userIdx, bookstoreIdx, content, photo, stars);
+            if(result === undefined){
+                res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ERROR_IN_INSERT_REVIEW));
+            }else{
+                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.INSERT_REVIEW_SUCCESS, {reviewIdx: result, userIdx:userIdx, bookstoreIdx:bookstoreIdx, stars: stars, content:content}));
+            }
+        }catch(err){
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+    },
+    showAllReview: async(req, res)=>{
+        const userIdx = req.decoded.userIdx;
+        const bookstoreIdx = req.params.bookstoreIdx;
+        try{
+            const result = await MainModel.showAllReview(bookstoreIdx);
+            if(result.length === 0){
+                res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
+            }else{
+                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SELECT_REVIEW, result));
+            }
+        }catch(err){
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+    },
+    deleteReview: async(req, res)=>{
+        const reviewIdx = req.params.reviewIdx;
+        try{
+            const result = await MainModel.deleteReview(reviewIdx);
+            if(result === 1){
+                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_REVIEW, {reviewIdx:reviewIdx}));
+            }else{
+                res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ERROR_IN_DELETE_REVIEW));
+            }
+        }catch(err){
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+    },
+    updateReview: async(req, res)=>{
+        const reviewIdx = req.params.reviewIdx;
+        let {stars, content, photo}= req.body;
+        try{
+            if(photo === undefined){
+                photo=null;
+            }
+            const result = await MainModel.updateReview(reviewIdx, stars, content, photo);
+            if(result === 1){
+                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_REVIEW,{reviewIdx: reviewIdx}));
+            }else{
+                res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ERROR_IN_UPDATE_REVIEW))
+            }
+        }catch(err){
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
     },
     search : async (req, res) => {
         const userIdx = req.decoded.userIdx;

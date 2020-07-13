@@ -39,6 +39,13 @@ router.get('/recent', AuthMiddleware.checkToken, mainController.showRecent);
  */
 router.get('/search/:keyword', AuthMiddleware.checkToken, mainController.search);
 
+/**
+ * 📌 후기
+ */
+router.get('/detail/review/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showAllReview);
+router.put('/update/review/:reviewIdx', AuthMiddleware.checkToken, mainController.updateReview);
+router.delete('/delete/review/:reviewIdx', AuthMiddleware.checkToken, mainController.deleteReview);
+
 // update bookstore profile image
 router.post('/profile/:bookstoreIdx', AuthMiddleware.checkToken, upload.single('profile'), mainController.updateProfile);
 module.exports = router;
