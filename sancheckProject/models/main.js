@@ -124,9 +124,30 @@ const bookstore = {
             throw err;
         }
     },
-    selectProfile: async (bookstoreIdx) => {
+    checkBookStore: async (bookstoreIdx) => {
+        /*
         const query = `SELECT b.bookstoreIdx, b.bookstoreName, b.profile, i.image1 FROM ${bookstoreTable} b, ${imagesTable} i
-                         WHERE b.bookstoreIdx = ${bookstoreIdx} AND b.bookstoreIdx = i.bookstoreIdx;`;
+                    WHERE b.bookstoreIdx = ${bookstoreIdx} AND b.bookstoreIdx = i.bookstoreIdx;`;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('select profile ERROR : ', err);
+            throw err;
+        }
+        */
+        const query = `select bookstoreIdx from ${bookstoreTable} where bookstoreIdx = ${bookstoreIdx}`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch(err){
+            console.log('select profile ERROR : ',err);
+            throw err;
+        }
+    },
+    selectProfile: async(bookstoreIdx)=>{
+        const query = `SELECT b.bookstoreIdx, b.bookstoreName, b.profile, i.image1 FROM ${bookstoreTable} b, ${imagesTable} i
+                    WHERE b.bookstoreIdx = ${bookstoreIdx} AND b.bookstoreIdx = i.bookstoreIdx;`;
         try {
             const result = await pool.queryParam(query);
             return result;

@@ -36,57 +36,34 @@ const main = {
          * httpOnly: HTTP 프로토콜만 쿠키 사용 가능
          * signed: 쿠키의 서명 여부를 결정
          *  */ 
-        var bookstores = req.cookies.bookstores;
-
+        var bookstores=req.cookies.bookstores;
         // 쿠키 확인
         if (req.cookies.bookstores) { // 이미 쿠키값이 있다면
             bookstores = req.cookies.bookstores; // 배열 형식으로?
         } else { // 최초 실행 시
-            bookstores = {};
+            bookstores = [];
+        }
+        // parseInt(bookstoreIdx): integer 타입으로 형변환
+        const result = await MainModel.checkBookStore(bookstoreIdx);
+        //console.log('bb: ', bookstores);
+        //console.log('result[0].bookstoreIdx: ', result[0].bookstoreIdx);
+        
+        // 서점 리스트가 정상적으로 있다면
+        if (result[0].bookstoreIdx !== undefined) {
+            if(bookstores.indexOf(result[0].bookstoreIdx) === -1){
+                bookstores.push(result[0].bookstoreIdx);
+            }else{
+                bookstores.splice(bookstores.indexOf(result[0].bookstoreIdx),1);
+                bookstores.push(result[0].bookstoreIdx);
+            }
         }
         
-        // parseInt(bookstoreIdx): integer 타입으로 형변환
-        const result = await MainModel.selectProfile(bookstoreIdx);
-        console.log("result: ", result[0]);
-
-        console.log('bb: ', bookstores);
-        console.log('result[0].bookstoreIdx: ', result[0].bookstoreIdx);
-        // console.log('bookstores[i][0].bookstoreIdx: ',bookstores[count][0].bookstoreIdx);
-
-        // 서점 리스트가 없을 경우
-        if (result[0] !== undefined) {
-            var flag = 0;
-            bookstores[count++] = result;
-            // 쿠키가 비어있지 않고
-            // if (bookstores !== {}) {
-            //     for (var i in bookstores) {
-            //         if (result[0].bookstoreIdx !== bookstores[i][0].bookstoreIdx) {
-            //             // console.log('bbb:', bookstores[i][0].bookstoreIdx);
-            //             flag = 0;
-            //             console.log('success!', flag);
-            //             break;
-            //         } else {
-            //             flag = 1;
-            //             console.log('fail!', flag);
-            //         }
-            //     }
-            // }
-            // if (flag === 1)
-            //     bookstores[count++] = result;
-        }
-
+        console.log('result[0] : ',result[0].bookstoreIdx);
+        console.log('bookstores <cookies> : ',bookstores);
         res.cookie('bookstores', bookstores, {
-            // maxAge: 60*60*1000*12 // 12h
-            // 최대로 저장할 수 있는 쿠키 개수가 정해져 있나?
-            maxAge: 100000
+            maxAge: 1000000
         });
-
-        // console.log(bookstores);
-
-        // res.redirect(`/main/detail/${bookstoreIdx}`); // 위치 지정해서 detail 뷰로 가능
-
         const bookstore = await MainModel.showDetail(userIdx, bookstoreIdx);
-        // console.log(bookstore);
         try {
             if (bookstore.length === 0) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
@@ -252,7 +229,6 @@ const main = {
     showRecent : async (req, res) => {
         const userIdx = req.decoded.userIdx;
         var bookstores = req.cookies.bookstores;
-
         if (!req.cookies.bookstores) {
             return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_RECENT_BOOKSTORES));
         }
@@ -260,27 +236,11 @@ const main = {
         console.log(bookstores);
 
         // json 객체 담을 배열
-        for (var i in bookstores) {
-            // console.log("bookstores[i]", bookstores[i]); // [ RowDataPacket { bookstoreIdx: 18, profile: 'NULL' } ]
-            // console.log("bookstores[i][0]: ", bookstores[i][0]); // RowDataPacket { bookstoreIdx: 18, profile: 'NULL' }
-            // console.log("bookstores[i][0][0]: ", bookstores[i][0]['bookstoreIdx']);
-
-            /* 중복 제거 */
-            // console.log("true/false? ", obj.includes(bookstores[i][0]));
-            // console.log(obj.indexOf(bookstores[i][0]));
-            // if (obj.indexOf(bookstores[i][0]) > -1) {
-            //     continue;
-            // }
-
-            obj[i] = bookstores[i][0];
-
-            
-            // var idx;
-            // if (idx = obj.indexOf(obj[i]) > -1) {
-            //     obj.splice(idx, 1);
-            // }
+        var cookies=[];
+        for(var i=bookstores.length-1;i>=0;i--){
+            cookies.push(await MainModel.selectProfile(bookstores[i]));
         }
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.COOKIE_SUCCESS, obj.reverse().slice(0,10)));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_BOOKSTORES, cookies));
     },
     updateProfile: async (req, res) => {
         // 데이터 받아오기

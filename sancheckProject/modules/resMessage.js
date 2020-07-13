@@ -43,6 +43,7 @@ module.exports = {
 
     // 최근 본 책방
     NO_RECENT_BOOKSTORES: '최근 본 책방이 없습니다.',
+    RECENT_BOOKSTORES: '최근 본 책방 조회 성공',
 
     //이메일 관련
     SEND_EMAIL_SUCCESS: '이메일 발송 성공',
