@@ -175,6 +175,7 @@ const bookstore = {
     },
     writeReview: async(userIdx, bookstoreIdx, content, photo, stars)=>{
         const fields = 'userIdx, bookstoreIdx, content, photo, stars, createdAt';
+        const time = 'NOW()'
         let query = `insert into ${reviewTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, '${content}', '${photo}', ${stars}, NOW())`;
         // NOW() 값 변경하기
         try{
@@ -196,7 +197,8 @@ const bookstore = {
         }
     },
     showAllReview: async(bookstoreIdx)=>{
-        const query = `select * from ${reviewTable} where bookstoreIdx = ${bookstoreIdx} order by createdAt DESC`;
+        const query = `select reviewIdx, userIdx, bookstoreIdx, content, photo, stars, date_format(createdAt, '%Y년 %c월 %e일 %H:%i 작성') as created 
+                        from ${reviewTable} where bookstoreIdx = ${bookstoreIdx} order by createdAt DESC;`;
         try{
             const result = await pool.queryParam(query);
             return result;

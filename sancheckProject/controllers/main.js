@@ -179,17 +179,6 @@ const main = {
         const userIdx = req.decoded.userIdx;
         let {bookstoreIdx, content, stars} = req.body;
         try{
-<<<<<<< HEAD
-            if(!bookstoreIdx||!content||!stars){
-                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
-            }
-            if(photo === undefined){
-                photo = null;
-            }
-            const result = await MainModel.writeReview(userIdx, bookstoreIdx, content, photo, stars);
-            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.INSERT_REVIEW_SUCCESS, {reviewIdx: result}));
-            
-=======
             console.log('reviewPhoto: ', reviewPhoto);
             if (!bookstoreIdx || !content || !stars) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
@@ -208,7 +197,6 @@ const main = {
                         photo: reviewPhoto
                     }));
             }
->>>>>>> gain
         }catch(err){
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
