@@ -109,7 +109,7 @@ const bookstore = {
             const result = await pool.queryParam(query);
             return result;
         } catch (err) {
-            console.log('showLocation ERROR : ', err);
+            console.log('show my page ERROR : ', err);
             throw err;
         }
     },
@@ -187,7 +187,8 @@ const bookstore = {
         }
     },
     showMyReview: async(userIdx)=>{
-        const query = `select * from ${reviewTable} where userIdx = ${userIdx} order by createdAt DESC`;
+        const query = `select reviewIdx, userIdx, bookstoreIdx, content, photo, stars, date_format(createdAt, '%Y년 %c월 %e일 %H:%i 작성') as created
+                         from ${reviewTable} where userIdx = ${userIdx} order by createdAt DESC`;
         try{
             const result = await pool.queryParam(query);
             return result;
