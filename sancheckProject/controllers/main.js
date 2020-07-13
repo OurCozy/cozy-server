@@ -176,21 +176,20 @@ const main = {
         const userIdx = req.decoded.userIdx;
         let {bookstoreIdx, content, photo, stars} = req.body;
         try{
+            if(!bookstoreIdx||!content||!stars){
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
+            }
             if(photo === undefined){
                 photo = null;
             }
             const result = await MainModel.writeReview(userIdx, bookstoreIdx, content, photo, stars);
-            if(result === undefined){
-                res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ERROR_IN_INSERT_REVIEW));
-            }else{
-                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.INSERT_REVIEW_SUCCESS, {reviewIdx: result, userIdx:userIdx, bookstoreIdx:bookstoreIdx, stars: stars, content:content}));
-            }
+            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.INSERT_REVIEW_SUCCESS, {reviewIdx: result}));
+            
         }catch(err){
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
     },
     showAllReview: async(req, res)=>{
-        const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         try{
             const result = await MainModel.showAllReview(bookstoreIdx);
@@ -220,15 +219,14 @@ const main = {
         const reviewIdx = req.params.reviewIdx;
         let {stars, content, photo}= req.body;
         try{
+            if(!stars || !content){
+                return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
+            }
             if(photo === undefined){
                 photo=null;
             }
-            const result = await MainModel.updateReview(reviewIdx, stars, content, photo);
-            if(result === 1){
-                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_REVIEW,{reviewIdx: reviewIdx}));
-            }else{
-                res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ERROR_IN_UPDATE_REVIEW))
-            }
+            await MainModel.updateReview(reviewIdx, stars, content, photo);
+            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_REVIEW,{reviewIdx: reviewIdx}));
         }catch(err){
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }

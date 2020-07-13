@@ -198,7 +198,7 @@ const bookstore = {
         const query = `select * from ${reviewTable} where bookstoreIdx = ${bookstoreIdx} order by createdAt DESC`;
         try{
             const result = await pool.queryParam(query);
-            return 1;
+            return result;
         }catch(err){
             console.log('showAllReview ERROR : ',err);
             throw err;
@@ -218,7 +218,7 @@ const bookstore = {
         const query = `update ${reviewTable} set stars =${stars}, content = '${content}', photo='${photo}' where reviewIdx=${reviewIdx}`;
         try{
             await pool.queryParam(query);
-            return 1;
+            return;
         }catch(err){
             console.log('updateReview ERROR : ',err);
             throw err;
