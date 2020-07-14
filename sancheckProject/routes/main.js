@@ -42,4 +42,6 @@ router.get('/search/:keyword', AuthMiddleware.checkToken, mainController.search)
 
 // update bookstore profile image
 router.post('/profile/:bookstoreIdx', AuthMiddleware.checkToken, upload.single('profile'), mainController.updateProfile);
+
+
 module.exports = router;

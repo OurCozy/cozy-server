@@ -7,6 +7,9 @@ const resMessage = require('../modules/resMessage');
 const TOKEN_EXPIRED = -3
 const TOKEN_INVALID = -2
 
+
+
+
 router.get('/local', async (req, res) => {
     // 헤더에 있는 token 값 가져오기
     var token = req.headers.token;
