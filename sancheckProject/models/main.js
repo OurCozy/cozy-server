@@ -22,7 +22,7 @@ const bookstore = {
     showDetail: async (userIdx, bookstoreIdx) => {
         const bookmarkQuery = `SELECT * FROM ${bookmarksTable} WHERE bookstoreIdx = ${bookstoreIdx} AND userIdx = ${userIdx};`;
         const query = `select bs.*, i.image1, i.image2, i.image3 from ${bookstoreTable} bs, ${imagesTable} i, ${userTable} u
-        where bs.bookstoreIdx = i.bookstoreIdx and bs.bookstoreIdx = ${bookstoreIdx} and u.useridx = ${userIdx};`;
+        where bs.bookstoreIdx = i.bookstoreIdx and bs.bookstoreIdx = ${bookstoreIdx} and u.userIdx = ${userIdx};`;
 
         try {
             const bookmarkResult = await pool.queryParam(bookmarkQuery);
@@ -115,7 +115,7 @@ const bookstore = {
     },
     showInterest: async (userIdx) => {
         let query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3, C.nickname, i.image1 FROM bookstore A, bookmarks B, user C, images i 
-        WHERE B.userIdx=6 and A.bookstoreIdx=B.bookstoreIdx and B.userIdx = C.userIdx and A.bookstoreIdx = i.bookstoreIdx order by B.bookmarkIdx desc;`;
+        WHERE B.userIdx=${userIdx} and A.bookstoreIdx=B.bookstoreIdx and B.userIdx = C.userIdx and A.bookstoreIdx = i.bookstoreIdx order by B.bookmarkIdx desc;`;
         try{
             let result = await pool.queryParam(query);
             return result;

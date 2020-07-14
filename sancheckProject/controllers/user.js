@@ -56,10 +56,10 @@ const user = {
         const {
             email,
             password,
-            autoLogin
+            //autoLogin
         } = req.body;
 
-        if (!email || !password || !autoLogin) {
+        if (!email || !password) {
             res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             return;
         }
@@ -83,6 +83,7 @@ const user = {
             .send(util.fail(statusCode.OK, resMessage.MISS_MATCH_PW));
         }
 
+        /*
         var expireDate = new Date( Date.now() + 60 * 60 * 1000 * 24 * 7); // 24 hour 7일
 
         if (req.body.autoLogin === 'checked') {
@@ -96,6 +97,7 @@ const user = {
         // 로그인 성공적으로 마쳤다면 - LOGIN_SUCCESS 전달 
 
 
+        */
         const {token, _} = await jwt.sign(user[0]);
 
         user[0].accessToken = token;

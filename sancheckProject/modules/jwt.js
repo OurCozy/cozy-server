@@ -10,11 +10,11 @@ const TOKEN_INVALID = -2;
 
 module.exports = {
     sign: async (user) => {
-        const uuidNew = await uuid.v4();
-        user['uuid'] = uuidNew; 
+        // const uuidNew = await uuid.v4();
+        // user['uuid'] = uuidNew; 
         const payload = {
-            userIdx: user.userIdx,
-            uuid: user.uuid
+            userIdx: user.userIdx
+            // uuid: user.uuid
         };
         const result = {
             token: jwt.sign(payload, secretKey, options),
