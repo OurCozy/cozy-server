@@ -29,7 +29,7 @@ const user = {
         result = await UserModel.checkUserByEmail(email);
         if (result.length > 0) {
             return res.status(statusCode.OK)
-            .send(util.fail(statusCode.OK, resMessage.ALREADY_EMAIL));
+                .send(util.fail(statusCode.OK, resMessage.ALREADY_EMAIL));
         }
 
         if(password !== passwordConfirm){
@@ -55,22 +55,24 @@ const user = {
     signin : async (req, res) => {
         const {
             email,
-            password
+            password,
+            autoLogin
         } = req.body;
-        if (!email || !password) {
+
+        if (!email || !password || !autoLogin) {
             res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             return;
         }
     
         // User의 email이 있는지 확인 - 없다면 NO_USER 반납
         const user = await UserModel.checkUserByEmail(email);
-        
+
         // statusCode: 204 => 요청에는 성공했으나 클라가 현재 페이지에서 벗어나지 않아도 된다.~~
         // 페이지는 바뀌지 않는데 리소스는 업데이트될 때 사용
         if (!user[0]) {
-            return res.status(statusCode.OK)
-                        .send(util.fail(statusCode.OK, resMessage.NO_USER));
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_USER));
         }
+
         // req의 Password 확인 - 틀렸다면 MISS_MATCH_PW 반납
         // encrypt 모듈 만들어놓은 거 잘 활용하기!
         const hashed = await encrypt.encryptWithSalt(password, user[0].salt);
@@ -80,10 +82,23 @@ const user = {
             return res.status(statusCode.OK)
             .send(util.fail(statusCode.OK, resMessage.MISS_MATCH_PW));
         }
-    
+
+        var expireDate = new Date( Date.now() + 60 * 60 * 1000 * 24 * 7); // 24 hour 7일
+
+        if (req.body.autoLogin === 'checked') {
+                console.log("자동로그인 체크!");
+            }
+
+            res.cookie('autoLogin', {email: req.body.email, hashed: user[0].hashed}, {
+                expires: expireDate
+            });    
         // console.log(user[0]);
         // 로그인 성공적으로 마쳤다면 - LOGIN_SUCCESS 전달 
+
+
         const {token, _} = await jwt.sign(user[0]);
+
+        
         
         res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, {accessToken: token}));

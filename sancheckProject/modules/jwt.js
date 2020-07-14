@@ -1,5 +1,6 @@
 const randToken = require('rand-token');
 const jwt = require('jsonwebtoken');
+const uuid = require('uuid');
 const secretKey = require('../config/secretKey').secretKey;
 const options = require('../config/secretKey').options;
 const refreshOptions = require('../config/secretKey').refreshOptions;
@@ -9,8 +10,11 @@ const TOKEN_INVALID = -2;
 
 module.exports = {
     sign: async (user) => {
+        const uuidNew = await uuid.v4();
+        user['uuid'] = uuidNew; 
         const payload = {
-            userIdx: user.userIdx
+            userIdx: user.userIdx,
+            uuid: user.uuid
         };
         const result = {
             token: jwt.sign(payload, secretKey, options),

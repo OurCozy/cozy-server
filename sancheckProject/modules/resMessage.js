@@ -65,6 +65,8 @@ module.exports = {
     ERROR_IN_DELETE_REVIEW: '후기 삭제 실패',
     UPDATE_REVIEW: '후기 수정 성공',
     ERROR_IN_UPDATE_REVIEW: '후기 수정 실패',
+    SUCCESS_UPDATE_REVIEW_PHOTO: '후기 사진 업데이트 성공',
+    FAIL_UPDATE_REVIEW_PHOTO: '후기 사진 업데이트 실패', 
     
     DB_ERROR: 'DB 오류'
 };

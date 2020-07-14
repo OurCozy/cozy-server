@@ -109,7 +109,7 @@ const bookstore = {
             const result = await pool.queryParam(query);
             return result;
         } catch (err) {
-            console.log('showLocation ERROR : ', err);
+            console.log('show my page ERROR : ', err);
             throw err;
         }
     },
@@ -184,7 +184,9 @@ const bookstore = {
     },
     writeReview: async(userIdx, bookstoreIdx, content, photo, stars)=>{
         const fields = 'userIdx, bookstoreIdx, content, photo, stars, createdAt';
+        const time = 'NOW()'
         let query = `insert into ${reviewTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, '${content}', '${photo}', ${stars}, NOW())`;
+        // NOW() 값 변경하기
         try{
             const result = await pool.queryParam(query);
             return result.insertId;
@@ -194,7 +196,8 @@ const bookstore = {
         }
     },
     showMyReview: async(userIdx)=>{
-        const query = `select * from ${reviewTable} where userIdx = ${userIdx} order by createdAt DESC`;
+        const query = `select reviewIdx, userIdx, bookstoreIdx, content, photo, stars, date_format(createdAt, '%Y년 %c월 %e일 %H:%i 작성') as created
+                         from ${reviewTable} where userIdx = ${userIdx} order by createdAt DESC`;
         try{
             const result = await pool.queryParam(query);
             return result;
@@ -204,7 +207,8 @@ const bookstore = {
         }
     },
     showAllReview: async(bookstoreIdx)=>{
-        const query = `select * from ${reviewTable} where bookstoreIdx = ${bookstoreIdx} order by createdAt DESC`;
+        const query = `select reviewIdx, userIdx, bookstoreIdx, content, photo, stars, date_format(createdAt, '%Y년 %c월 %e일 %H:%i 작성') as created 
+                        from ${reviewTable} where bookstoreIdx = ${bookstoreIdx} order by createdAt DESC;`;
         try{
             const result = await pool.queryParam(query);
             return result;
@@ -223,13 +227,28 @@ const bookstore = {
             throw err;
         }
     },
-    updateReview: async(reviewIdx, stars, content, photo)=>{
-        const query = `update ${reviewTable} set stars =${stars}, content = '${content}', photo='${photo}' where reviewIdx=${reviewIdx}`;
+    updateReview: async(reviewIdx, stars, content)=>{
+        const query = `update ${reviewTable} set stars =${stars}, content = '${content}' where reviewIdx = ${reviewIdx}`;
         try{
             await pool.queryParam(query);
             return;
         }catch(err){
             console.log('updateReview ERROR : ',err);
+            throw err;
+        }
+    },
+    updateReviewPhoto: async(bookstoreIdx, reviewPhoto) => {
+    let query = `UPDATE ${reviewTable} SET photo = '${reviewPhoto}' WHERE bookstoreIdx = ${bookstoreIdx};`;
+
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            if (err.errno == 1062) {
+                console.log('update review photo ERROR : ', err.errno, err.code);
+                throw err;
+            }
+            console.log('update review photo ERROR : ', err);
             throw err;
         }
     }
