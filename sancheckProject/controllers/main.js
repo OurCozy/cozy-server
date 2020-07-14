@@ -126,7 +126,8 @@ const main = {
                     hashtag1: "NULL",
                     hashtag2: "NULL",
                     hashtag3: "NULL",
-                    nickname: nickname[0].nickname
+                    nickname: nickname[0].nickname,
+                    image1: "NULL"
                 }));
             }else{
                 return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, interest));

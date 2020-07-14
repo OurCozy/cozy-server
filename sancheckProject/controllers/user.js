@@ -98,10 +98,16 @@ const user = {
 
         const {token, _} = await jwt.sign(user[0]);
 
-        
+        user[0].accessToken = token;
         
         res.status(statusCode.OK)
-            .send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, {accessToken: token}));
+            .send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, {
+                userIdx: user[0].userIdx,
+                nickname: user[0].nickname,
+                email: user[0].email,
+                profile: user[0].profile,
+                accessToken: user[0].accessToken
+            }));
     },
     updateImages: async(req, res)=>{
         const bookstoreIdx=req.params.bookstoreIdx;

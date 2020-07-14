@@ -114,8 +114,8 @@ const bookstore = {
         }
     },
     showInterest: async (userIdx) => {
-        let query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3, C.nickname, i.image1 FROM ${bookstoreTable} A, ${bookmarksTable} B, ${userTable} C, ${imagesTable} i 
-                        WHERE B.userIdx=${userIdx} and A.bookstoreIdx=B.bookstoreIdx and B.userIdx = C.userIdx and A.bookstoreIdx = i.bookstoreIdx;`;
+        let query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3, C.nickname, i.image1 FROM bookstore A, bookmarks B, user C, images i 
+        WHERE B.userIdx=6 and A.bookstoreIdx=B.bookstoreIdx and B.userIdx = C.userIdx and A.bookstoreIdx = i.bookstoreIdx order by B.bookmarkIdx desc;`;
         try{
             let result = await pool.queryParam(query);
             return result;
