@@ -125,17 +125,6 @@ const bookstore = {
         }
     },
     checkBookStore: async (bookstoreIdx) => {
-        /*
-        const query = `SELECT b.bookstoreIdx, b.bookstoreName, b.profile, i.image1 FROM ${bookstoreTable} b, ${imagesTable} i
-                    WHERE b.bookstoreIdx = ${bookstoreIdx} AND b.bookstoreIdx = i.bookstoreIdx;`;
-        try {
-            const result = await pool.queryParam(query);
-            return result;
-        } catch (err) {
-            console.log('select profile ERROR : ', err);
-            throw err;
-        }
-        */
         const query = `select bookstoreIdx from ${bookstoreTable} where bookstoreIdx = ${bookstoreIdx}`;
         try{
             const result = await pool.queryParam(query);
@@ -158,8 +147,7 @@ const bookstore = {
     },
     searchByKeyword: async (keyword) => {
         const match = 'bookstoreName, location, activity, shortIntro, shortIntro2, description, hashtag1, hashtag2, hashtag3';
-        const query = `select bookstoreIdx, ${match} from ${bookstoreTable} 
-                        where match (${match}) against('+${keyword}*' in boolean mode) order by bookmark desc;`
+        const query = `select bookstoreIdx, ${match} from ${bookstoreTable} where match (${match}) against('+${keyword}*' in boolean mode) order by bookmark desc;`
         try {
             const result = await pool.queryParam(query);
             return result;
