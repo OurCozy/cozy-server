@@ -48,7 +48,6 @@ const bookstore = {
                 const countResult = await pool.queryParam(countQuery);
                 var count = countResult[0].cnt;
                 locationResult[i].count = count;
-
                 let result = await pool.queryParam(bookmarkQuery);
                 if (result.length === 0) {
                     checked = 0;
@@ -73,32 +72,38 @@ const bookstore = {
             throw err;
         }
     },
+    checkInterest: async(userIdx, bookstoreIdx)=>{
+        const query = `select * from ${bookmarksTable} where userIdx = ${userIdx} and bookstoreIdx=${bookstoreIdx}`;
+        try{
+            const result = await pool.queryParam(query);
+            if(result.length === 0){
+                return 0;//checked 안되어있음 -> 관심책방으로 등록해야
+            }else{
+                return 1;//checked 되어있음 -> 관심책방으로 선정되어 있음 -> 관심책방 해제해야.
+            }
+        }catch(err){
+            console.log('checkInterest bookmarks ERROR : ', err);
+            throw err;
+        }
+    },
     updateBookmark: async (userIdx, bookstoreIdx) => {
-        const selectQuery = `SELECT * FROM ${bookmarksTable} WHERE userIdx = '${userIdx}' AND bookStoreIdx = '${bookstoreIdx}';`;
-        // 존재하면 delete, 존재 x면 update
-        const fields = 'userIdx, bookstoreIdx, sectionIdx';
-        const questions = '?, ?, ?';
-        try {
-            // INSERT INTO 테이블명 (COLUMN_LIST) VALUES (COLUMN_LIST에 넣을 VALUE_LIST);
-            const updateQuery = `INSERT INTO ${bookmarksTable} (${fields}) VALUES (${questions});`
-            const deleteQuery = `DELETE FROM ${bookmarksTable} WHERE userIdx = '${userIdx}' AND bookstoreIdx = '${bookstoreIdx}';`;
-            // bookstore 테이블 업데이트 되게 수정
-            let result = await pool.queryParam(selectQuery);
-            if (result.length === 0) {
-                const findSectionIDx = `SELECT sectionIdx FROM ${bookstoreTable} WHERE bookstoreIdx = ${bookstoreIdx};`;
-                result = await pool.queryParam(findSectionIDx);
-                var sectionIdx = result[0].sectionIdx;
-                console.log('sectionIdx: ',sectionIdx);
-                const values = [userIdx, bookstoreIdx, sectionIdx];
-                result = await pool.queryParamArr(updateQuery, values);
-                // const insertId = result.insertId;
+        const fields = 'userIdx, bookstoreIdx, checked';
+        let query = `delete from ${bookmarksTable} where userIdx=${userIdx} and bookstoreIdx=${bookstoreIdx}`;//북마크 해제
+        const result = await module.exports.checkInterest(userIdx, bookstoreIdx);
+        let query2 = `update ${bookstoreTable} set bookmark=bookmark-1 where bookstoreIdx=${bookstoreIdx}`;//북마크 -1
+        if(result === 0 ){
+            query = `insert into ${bookmarksTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, 1)`;//북마크 설정
+            query2 = `update ${bookstoreTable} set bookmark=bookmark+1 where bookstoreIdx=${bookstoreIdx}`;
+        }
+        try{
+            await pool.queryParam(query);
+            await pool.queryParam(query2);
+            if(result === 0){//result==0 이면 북마크 설정한 것. 
                 return 1;
-            } else {
-                await pool.queryParam(deleteQuery);
-                // result = await pool.queryParam(selectQuery);
+            }else{//result==1 이면 북마크 해제한 것.
                 return 0;
             }
-        } catch (err) {
+        }catch(err){
             console.log('update bookmarks ERROR : ', err);
             throw err;
         }
@@ -184,8 +189,8 @@ const bookstore = {
     },
     writeReview: async(userIdx, bookstoreIdx, content, photo, stars)=>{
         const fields = 'userIdx, bookstoreIdx, content, photo, stars, createdAt';
-        const time = 'NOW()'
-        let query = `insert into ${reviewTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, '${content}', '${photo}', ${stars}, NOW())`;
+        const time = 'NOW()';
+        let query = `insert into ${reviewTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, '${content}', '${photo}', ${stars}, ${time})`;
         // NOW() 값 변경하기
         try{
             const result = await pool.queryParam(query);
@@ -197,7 +202,7 @@ const bookstore = {
     },
     showMyReview: async(userIdx)=>{
         const query = `select reviewIdx, userIdx, bookstoreIdx, content, photo, stars, date_format(createdAt, '%Y년 %c월 %e일 %H:%i 작성') as created
-                         from ${reviewTable} where userIdx = ${userIdx} order by createdAt DESC`;
+                        from ${reviewTable} where userIdx = ${userIdx} order by createdAt DESC`;
         try{
             const result = await pool.queryParam(query);
             return result;

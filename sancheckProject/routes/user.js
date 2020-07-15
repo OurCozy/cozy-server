@@ -7,7 +7,7 @@ const AuthMiddleware = require('../middlewares/auth');
 
 router.post('/signin', UserController.signin);
 router.post('/signup', UserController.signup);
-router.post('/uploadImage/:bookstoreIdx',upload.array('profile'),UserController.updateImages);
+router.post('/uploadImage/:bookstoreIdx', upload.array('profile'), UserController.updateImages);
 router.post('/findpw', UserController.findPassword);
 
 /* 

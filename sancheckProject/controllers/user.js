@@ -5,6 +5,7 @@ const resMessage = require('../modules/resMessage');
 const util = require('../modules/util');
 const jwt = require('../modules/jwt');
 const mailer = require('../modules/mailer');
+const multer = require('../modules/multer');
 
 const user = {
     signup : async (req, res) => {
@@ -90,13 +91,10 @@ const user = {
                 console.log("자동로그인 체크!");
             }
 
-            res.cookie('autoLogin', {email: req.body.email, hashed: user[0].hashed}, {
+            res.cookie('autoLogin', {userIdx: user[0].userIdx}, {
                 expires: expireDate
             });    
-        // console.log(user[0]);
         // 로그인 성공적으로 마쳤다면 - LOGIN_SUCCESS 전달 
-
-
         */
         const {token, _} = await jwt.sign(user[0]);
 

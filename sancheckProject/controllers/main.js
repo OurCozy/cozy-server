@@ -92,6 +92,21 @@ const main = {
     },
     showInterest : async (req, res) => {
         const userIdx = req.decoded.userIdx;
+
+
+        //console.log('interest cookie : ', req.cookies.autoLogin);
+        /*
+        const userIdx = req.cookies.autoLogin.userIdx;
+        let userIdx;
+        if(req.cookies.autoLogin === undefined ){
+            //로그인 페이지로 돌아가기
+            res.writeHead(302, {'Location':'user/signin'});
+            res.end();
+        }else{
+            userIdx = req.cookies.autoLogin.userIdx
+        }
+        */
+        
         try{
             const interest = await MainModel.showInterest(userIdx);
             if(interest.length===0){
@@ -116,17 +131,16 @@ const main = {
     updateBookmark: async (req, res) => {
         const bookstoreIdx = req.params.bookstoreIdx;
         const userIdx = req.decoded.userIdx;
-        // console.log(userIdx);
         try {
             const result = await MainModel.updateBookmark(userIdx, bookstoreIdx);
-            // if (!result.length) {
-            //     return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.))
-            // }
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_SUCCESS, {checked: result}));
+            let message = '북마크 체크';
+            if(result === 0){
+                message = '북마크 해제';
+            }
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_SUCCESS, {message: message, checked: result}));
         } catch (err) {
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
-
     },
     showMypage : async (req, res) => {
         const userIdx = req.decoded.userIdx;
@@ -159,6 +173,7 @@ const main = {
         try{
             console.log('reviewPhoto: ', reviewPhoto);
             if (!bookstoreIdx || !content || !stars) {
+                console.log('aa');
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             }
             const result = await MainModel.writeReview(userIdx, bookstoreIdx, content, reviewPhoto, stars);
@@ -293,7 +308,7 @@ const main = {
     updateReviewPhoto: async (req, res) => {
         const bookstoreIdx = req.params.bookstoreIdx;
         if(req.file === undefined) {
-            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.FAIL_UPDATE_REVIEW_PHOTO, {reveiwPhoto: reviewPhoto}));
+            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.FAIL_UPDATE_REVIEW_PHOTO, {reviewPhoto: reviewPhoto}));
         }
         console.log('req.file: ', req.file);
         reviewPhoto = req.file.location;
