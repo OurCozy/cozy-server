@@ -1,9 +1,15 @@
 const pool = require('../modules/pool');
+var moment = require('moment');
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
+
 const bookstoreTable = 'bookstore';
 const imagesTable = 'images';
 const bookmarksTable = 'bookmarks';
 const userTable = 'user';
 const reviewTable = 'review';
+
+var checked = 0;
 
 const bookstore = {
     showRecommendation: async () => {
@@ -56,9 +62,10 @@ const bookstore = {
                 for (var c in result) {
                     if (result[c].bookstoreIdx === locationResult[i].bookstoreIdx) {
                         checked = 1;
-                    } else {
-                        checked = 0;
-                    }
+                    } 
+                    // else {
+                    //     checked = 0;
+                    // }
                     locationResult[i].checked = checked;
                 }   
             }
@@ -119,8 +126,8 @@ const bookstore = {
         }
     },
     showInterest: async (userIdx) => {
-        let query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3, C.nickname, i.image1 FROM bookstore A, bookmarks B, user C, images i 
-        WHERE B.userIdx=${userIdx} and A.bookstoreIdx=B.bookstoreIdx and B.userIdx = C.userIdx and A.bookstoreIdx = i.bookstoreIdx order by B.bookmarkIdx desc;`;
+        let query = `SELECT A.bookstoreIdx, A.bookstoreName, A.profile, A.hashtag1, A.hashtag2, A.hashtag3, C.nickname, i.image1 FROM ${bookstoreTable} A, ${bookmarksTable} B, ${userTable} C, ${imagesTable} i 
+        WHERE B.userIdx = ${userIdx} and A.bookstoreIdx=B.bookstoreIdx and B.userIdx = C.userIdx and A.bookstoreIdx = i.bookstoreIdx order by B.bookmarkIdx desc;`;
         try{
             let result = await pool.queryParam(query);
             return result;
@@ -189,8 +196,10 @@ const bookstore = {
     },
     writeReview: async(userIdx, bookstoreIdx, content, photo, stars)=>{
         const fields = 'userIdx, bookstoreIdx, content, photo, stars, createdAt';
-        const time = 'NOW()';
-        let query = `insert into ${reviewTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, '${content}', '${photo}', ${stars}, ${time})`;
+        // "2020년 7월 4일 17:00 작성"
+        const date = moment().format('YYYY년 M월 D일 HH:mm 작성');
+        console.log(date);
+        let query = `insert into ${reviewTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, '${content}', '${photo}', ${stars}, '${date}')`;
         // NOW() 값 변경하기
         try{
             const result = await pool.queryParam(query);
@@ -200,14 +209,17 @@ const bookstore = {
             throw err;
         }
     },
-    showMyReview: async(userIdx)=>{
-        const query = `select reviewIdx, userIdx, bookstoreIdx, content, photo, stars, date_format(createdAt, '%Y년 %c월 %e일 %H:%i 작성') as created
-                        from ${reviewTable} where userIdx = ${userIdx} order by createdAt DESC`;
+    showMyReview: async(userIdx) => {
+        const query = `SELECT r.*, u.nickname FROM ${reviewTable} r, ${userTable} u WHERE r.userIdx = u.userIdx AND r.userIdx = ${userIdx} ORDER BY reviewIdx DESC`;
         try{
             const result = await pool.queryParam(query);
             return result;
-        }catch(err){
-            console.log('showMyReview ERROR : ',err);
+        }catch (err) {
+            if (err.errno == 1062) {
+                console.log('show my review ERROR : ', err.errno, err.code);
+                throw err;
+            }
+            console.log('show my review ERROR : ', err);
             throw err;
         }
     },
@@ -242,11 +254,13 @@ const bookstore = {
             throw err;
         }
     },
-    storeUpdatedReview: async(reviewIdx, stars, content)=>{
-        const query = `update ${reviewTable} set stars =${stars}, content = '${content}' where reviewIdx = ${reviewIdx}`;
+    storeUpdatedReview: async(reviewIdx, stars, content, reviewPhoto)=>{
+        let query = `update ${reviewTable} set stars =${stars}, content = '${content}', photo = '${reviewPhoto}' where reviewIdx = ${reviewIdx}`;
         try{
             await pool.queryParam(query);
-            return;
+            query = `SELECT * FROM ${reviewTable} WHERE reviewIdx = ${reviewIdx};`; 
+            const result = await pool.queryParam(query);
+            return result;
         }catch(err){
             console.log('storeUpdatedReview ERROR : ',err);
             throw err;

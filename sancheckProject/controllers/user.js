@@ -44,6 +44,7 @@ const user = {
         /*
         // 사용중인 아이디가 있는지 확인
         let result = await UserModel.checkUserByName(nickname);
+        
         if (result.length > 0) {
             return res.status(statusCode.OK)
                 .send(util.fail(statusCode.OK, resMessage.ALREADY_ID));
@@ -110,13 +111,17 @@ const user = {
         /*
         var expireDate = new Date( Date.now() + 60 * 60 * 1000 * 24 * 7); // 24 hour 7일
 
-        if (req.body.autoLogin === 'checked') {
-                console.log("자동로그인 체크!");
-            }
+        // if (req.body.autoLogin === 'checked') {
+        //         console.log("자동로그인 체크!");
+        //     }
 
             res.cookie('autoLogin', {userIdx: user[0].userIdx}, {
                 expires: expireDate
             });    
+        //     res.cookie('autoLogin', {email: req.body.email, hashed: user[0].hashed}, {
+        //         expires: expireDate
+        //     });    
+        // console.log(user[0]);
         // 로그인 성공적으로 마쳤다면 - LOGIN_SUCCESS 전달 
         */
         const {token, _} = await jwt.sign(user[0]);

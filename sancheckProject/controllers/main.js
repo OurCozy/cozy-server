@@ -9,9 +9,9 @@ var reviewPhoto = "NULL";
 
 const main = {
     showRecommendation : async (req, res) => {
-        // const userIdx = req.decoded.userIdx;
-        var autoLogin = req.cookies.autoLogin;
-        console.log(autoLogin);
+        const userIdx = req.decoded.userIdx;
+        // var autoLogin = req.cookies.autoLogin;
+        // console.log(autoLogin);
         const bookstore = await MainModel.showRecommendation();
         try {
             if (!bookstore.length) {
@@ -107,10 +107,13 @@ const main = {
         }
         */
         
+        console.log('userIdx: ',userIdx);
         try{
             const interest = await MainModel.showInterest(userIdx);
-            if(interest.length===0){
+            console.log('interest: ', interest);
+            if(interest.length === 0){
                 const nickname = await MainModel.selectNickname(userIdx);
+                console.log('nickname: ', nickname);
                 return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_DATA, {
                     bookstoreIdx: 0,
                     bookstoreName: "NULL",
@@ -122,6 +125,7 @@ const main = {
                     image1: "NULL"
                 }));
             }else{
+                console.log(interest);
                 return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, interest));
             }
         }catch(err){
@@ -159,7 +163,18 @@ const main = {
         try{
             const result = await MainModel.showMyReview(userIdx);
             if(result.length === 0){
-                res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
+                const nickname = await MainModel.selectNickname(userIdx);
+                console.log(nickname);
+                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_REVIEW, {
+                    reviewIdx: 0,
+                    userIdx: nickname[0].userIdx,
+                    bookstoreIdx: 0,
+                    content: 'NULL',
+                    photo: 'NULL',
+                    stars: 0,
+                    createdAt: 'NULL',
+                    nickname: nickname[0].nickname
+                }));
             }
             res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SELECT_REVIEW, result));
 
@@ -244,18 +259,21 @@ const main = {
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
     },
-    storeUpdateReview: async(req, res)=>{
+    storeUpdatedReview: async(req, res)=>{
         const reviewIdx = req.params.reviewIdx;
-        let {stars, content, photo}= req.body;
+        let {stars, content}= req.body;
         try{
             if(!stars || !content){
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             }
-            if(photo === undefined){
-                photo = null;
-            }
-            await MainModel.storeUpdatedReview(reviewIdx, stars, content, photo);
-            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_REVIEW,{reviewIdx: reviewIdx}));
+            // if( === undefined){
+            //     photo = null;
+            // }
+            const result = await MainModel.storeUpdatedReview(reviewIdx, stars, content, reviewPhoto);
+            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_REVIEW,
+                {
+                    result
+                }));
         }catch(err){
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
