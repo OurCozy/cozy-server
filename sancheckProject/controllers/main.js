@@ -12,7 +12,7 @@ const main = {
         const userIdx = req.decoded.userIdx;
         // var autoLogin = req.cookies.autoLogin;
         // console.log(autoLogin);
-        const bookstore = await MainModel.showRecommendation();
+        const bookstore = await MainModel.showRecommendation(userIdx);
         try {
             if (!bookstore.length) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));

@@ -10,11 +10,12 @@ const userTable = 'user';
 const reviewTable = 'review';
 
 const bookstore = {
-    showRecommendation: async () => {
-        const fields = 'bookstoreIdx, profile, shortIntro, shortIntro2, bookstoreName, location';
-        // const questions = `?, ?, ?, ?, ?`;
-        // const values = [id, name, password, salt, email];
-        const query = `SELECT ${fields} FROM ${bookstoreTable} WHERE profile != 'NULL' AND shortIntro != 'NULL' ORDER BY bookmark DESC LIMIT 8;`;
+    showRecommendation: async (userIdx) => {
+        const query = `SELECT bs.bookstoreIdx, bs.profile, bs.shortIntro, bs.shortIntro2, bs.bookstoreName, bs.location, u.nickname FROM ${bookstoreTable} bs, ${userTable} u 
+                        WHERE bs.profile != 'NULL' 
+                        AND bs.shortIntro != 'NULL' 
+                        AND userIdx = ${userIdx}
+                        ORDER BY bs.bookmark DESC LIMIT 8;`;
         try {
             const result = await pool.queryParam(query);
             return result;
@@ -42,12 +43,6 @@ const bookstore = {
         }
     },
     showLocation: async (userIdx, sectionIdx) => {
-        // bookmarkIdx, checked
-        const bookmark = `SELECT bs.bookstoreIdx, bm.checked FROM ${bookstoreTable} bs, ${bookmarksTable} bm 
-                        WHERE bs.bookstoreIdx = bm.bookstoreIdx 
-                        AND sectionIdx = ${sectionIdx} 
-                        AND userIdx = ${userIdx};`;
-
         // location section별로
         const location = `SELECT bs.bookstoreIdx, bs.bookstoreName, bs.hashtag1, bs.hashtag2, bs.hashtag3, bs.profile, i.image1 from ${bookstoreTable} bs, ${imagesTable} i 
                         WHERE bs.sectionIdx = ${sectionIdx} 
@@ -78,8 +73,9 @@ const bookstore = {
                 if (queryResult.length === 0) {
                     locationResult[a].checked = 0;
                 }
-                console.log('locationResult: ', locationResult);    
+                locationResult[a].count = locationResult.length;
             }
+            
             return locationResult;
         } catch (err) {
             if (err.errno == 1062) {
