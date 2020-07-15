@@ -9,7 +9,7 @@ const AuthMiddleware = require('../middlewares/auth');
  * 📌 추천 탭
  * 메인 뷰, 상세 뷰
  */
-router.get('/recommendation', mainController.showRecommendation);
+router.get('/recommendation',AuthMiddleware.checkToken, mainController.showRecommendation);
 router.get('/detail/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showDetail);
 
 /**
