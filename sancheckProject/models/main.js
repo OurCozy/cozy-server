@@ -207,10 +207,11 @@ const bookstore = {
         const date = moment().format('YYYY년 M월 D일 HH:mm 작성');
         console.log(date);
         let query = `insert into ${reviewTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, '${content}', '${photo}', ${stars}, '${date}')`;
-        // NOW() 값 변경하기
         try{
-            const result = await pool.queryParam(query);
-            return result.insertId;
+            let result = await pool.queryParam(query);
+            query = `SELECT r.*, u.nickname, u.profile FROM ${reviewTable} r, ${userTable} u WHERE r.reviewIdx = ${result.insertId} AND r.userIdx = ${userIdx};`;
+            result = await pool.queryParam(query);
+            return result;
         }catch(err){
             console.log('writeReview ERROR : ',err);
             throw err;

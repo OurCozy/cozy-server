@@ -32,7 +32,7 @@ router.put('/interest/:bookstoreIdx', AuthMiddleware.checkToken, mainController.
 router.get('/mypage', AuthMiddleware.checkToken, mainController.showMypage);
 router.get('/mypage/review', AuthMiddleware.checkToken, mainController.showMyReview);
 router.post('/detail/review', AuthMiddleware.checkToken, mainController.writeReview);
-router.post('/detail/review/:bookstoreIdx', AuthMiddleware.checkToken, upload.single('reviewPhoto'), mainController.updateReviewPhoto);
+router.post('/detail/review/:bookstoreIdx', AuthMiddleware.checkToken, upload.single('photo'), mainController.updateReviewPhoto);
 router.get('/recent', AuthMiddleware.checkToken, mainController.showRecent);
 
 /** 
