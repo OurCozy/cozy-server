@@ -41,7 +41,7 @@ router.get('/recent', AuthMiddleware.checkToken, mainController.showRecent);
 router.get('/search/:keyword', AuthMiddleware.checkToken, mainController.search);
 
 /**
- * 📌 후기
+ * 📌 후기 조회
  */
 router.get('/detail/review/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showReviews);
 router.get('/detail/review2/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showTwoReviews);
@@ -51,6 +51,9 @@ router.get('/update/review/:reviewIdx', AuthMiddleware.checkToken, mainControlle
 router.put('/update/review/:reviewIdx', AuthMiddleware.checkToken, mainController.storeUpdatedReview);
 router.delete('/delete/review/:reviewIdx', AuthMiddleware.checkToken, mainController.deleteReview);
 
-// update bookstore profile image
+/**
+ * 📌 관리자용
+ * update bookstore profile image
+ *  */  
 router.post('/profile/:bookstoreIdx', AuthMiddleware.checkToken, upload.single('profile'), mainController.updateProfile);
 module.exports = router;

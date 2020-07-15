@@ -264,7 +264,8 @@ const bookstore = {
         }
     },
     storeUpdatedReview: async(reviewIdx, stars, content, reviewPhoto)=>{
-        let query = `update ${reviewTable} set stars =${stars}, content = '${content}', photo = '${reviewPhoto}' where reviewIdx = ${reviewIdx}`;
+        const date = moment().format('YYYY년 M월 D일 HH:mm 수정');
+        let query = `update ${reviewTable} set stars =${stars}, content = '${content}', photo = '${reviewPhoto}', createdAt = '${date}' where reviewIdx = ${reviewIdx}`;
         try{
             await pool.queryParam(query);
             query = `SELECT * FROM ${reviewTable} WHERE reviewIdx = ${reviewIdx};`; 
