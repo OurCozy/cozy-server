@@ -77,6 +77,7 @@ const main = {
         }
     },
     showLocation : async (req, res) => {
+        
         const sectionIdx = req.params.sectionIdx;
         const userIdx = req.decoded.userIdx;
         console.log('sectionIdx: ',sectionIdx);
@@ -89,6 +90,7 @@ const main = {
         } catch (err) {
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
+        
     },
     showInterest : async (req, res) => {
         const userIdx = req.decoded.userIdx;

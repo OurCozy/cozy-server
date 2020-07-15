@@ -44,37 +44,46 @@ const bookstore = {
         }
     },
     showLocation: async (userIdx, sectionIdx) => {
-        const locationQuery = `SELECT bs.bookstoreIdx, bs.sectionIdx, bs.bookstoreName, bs.hashtag1, bs.hashtag2, bs.hashtag3, bs.profile, i.image1 FROM ${bookstoreTable} bs, ${imagesTable} i WHERE bs.sectionIdx = ${sectionIdx} AND bs.bookstoreIdx = i.bookstoreIdx;`;
-        const countQuery = `select count(*) as cnt from ${bookstoreTable} where sectionIdx = ${sectionIdx};`;
-        const bookmarkQuery = `SELECT * from ${bookstoreTable} bs, ${bookmarksTable} bm WHERE bs.bookstoreIdx = bm.bookstoreIdx and bm.userIdx = ${userIdx} and bs.sectionIdx = ${sectionIdx};`;
-        var checked = 0;
+        // bookmarkIdx, checked
+        const bookmark = `SELECT bs.bookstoreIdx, bm.checked FROM ${bookstoreTable} bs, ${bookmarksTable} bm 
+                        WHERE bs.bookstoreIdx = bm.bookstoreIdx 
+                        AND sectionIdx = ${sectionIdx} 
+                        AND userIdx = ${userIdx};`;
+
+        // location section별로
+        const location = `SELECT bs.bookstoreIdx, bs.bookstoreName, bs.hashtag1, bs.hashtag2, bs.hashtag3, bs.profile, i.image1 from ${bookstoreTable} bs, ${imagesTable} i 
+                        WHERE bs.sectionIdx = ${sectionIdx} 
+                        AND bs.bookstoreIdx = i.bookstoreIdx;`;
+
+        // checked된 책방만 seciton별로
+        const query = `select bs.bookstoreIdx, bs.bookstoreName, bs.hashtag1, bs.hashtag2, bs.hashtag3, bs.profile, i.image1 from bookstore bs, images i, bookmarks bm
+        where bs.sectionIdx = ${sectionIdx} and bs.bookstoreIdx = i.bookstoreIdx and bs.bookstoreIdx = bm.bookstoreIdx and bm.userIdx=${userIdx};`;
+
+
         try {
-            let locationResult = await pool.queryParam(locationQuery);
-            for (var i in locationResult) {
-                const countResult = await pool.queryParam(countQuery);
-                var count = countResult[0].cnt;
-                locationResult[i].count = count;
-                let result = await pool.queryParam(bookmarkQuery);
-                if (result.length === 0) {
-                    checked = 0;
-                    locationResult[i].checked = checked;
-                }
-                for (var c in result) {
-                    if (result[c].bookstoreIdx === locationResult[i].bookstoreIdx) {
+            var locationResult = await pool.queryParam(location);
+            var queryResult = await pool.queryParam(query);
+            console.log('locationResult : ', locationResult);
+            console.log('queryResult : ', queryResult);
+            for (var a in locationResult) {
+                var checked=0;
+                for (var b in queryResult) {
+                    if (locationResult[a].bookstoreIdx === queryResult[b].bookstoreIdx) {
                         checked = 1;
-                    } 
-                    // else {
-                    //     checked = 0;
-                    // }
-                    locationResult[i].checked = checked;
-                }   
+                        locationResult[a].checked = checked;
+                        break;
+                    }
+                }
+                locationResult[a].checked = checked;
+                console.log('locationResult[a] : ', locationResult[a]);
+                
             }
-            
-            const countResult = await pool.queryParam(countQuery);
-            var count = countResult[0].cnt;
-            locationResult[0].count = count;
             return locationResult;
         } catch (err) {
+            if (err.errno == 1062) {
+                console.log('show location ERROR : ', err.errno, err.code);
+                throw err;
+            }
             console.log('show location ERROR : ', err);
             throw err;
         }
@@ -224,8 +233,7 @@ const bookstore = {
         }
     },
     showAllReview: async(bookstoreIdx)=>{
-        const query = `select reviewIdx, userIdx, bookstoreIdx, content, photo, stars, date_format(createdAt, '%Y년 %c월 %e일 %H:%i 작성') as created 
-                        from ${reviewTable} where bookstoreIdx = ${bookstoreIdx} order by createdAt DESC;`;
+        const query = `select * from ${reviewTable} where bookstoreIdx = ${bookstoreIdx} order by reviewIdx DESC;`;
         try{
             const result = await pool.queryParam(query);
             return result;
