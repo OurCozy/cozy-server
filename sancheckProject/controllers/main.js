@@ -9,9 +9,9 @@ var reviewPhoto = "NULL";
 
 const main = {
     showRecommendation : async (req, res) => {
-        // const userIdx = req.decoded.userIdx;
-        var autoLogin = req.cookies.autoLogin;
-        console.log(autoLogin);
+        const userIdx = req.decoded.userIdx;
+        // var autoLogin = req.cookies.autoLogin;
+        // console.log(autoLogin);
         const bookstore = await MainModel.showRecommendation();
         try {
             if (!bookstore.length) {
@@ -92,10 +92,13 @@ const main = {
     },
     showInterest : async (req, res) => {
         const userIdx = req.decoded.userIdx;
+        console.log('userIdx: ',userIdx);
         try{
             const interest = await MainModel.showInterest(userIdx);
-            if(interest.length===0){
+            console.log('interest: ', interest);
+            if(interest.length === 0){
                 const nickname = await MainModel.selectNickname(userIdx);
+                console.log('nickname: ', nickname);
                 return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_DATA, {
                     bookstoreIdx: 0,
                     bookstoreName: "NULL",
@@ -107,6 +110,7 @@ const main = {
                     image1: "NULL"
                 }));
             }else{
+                console.log(interest);
                 return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, interest));
             }
         }catch(err){
