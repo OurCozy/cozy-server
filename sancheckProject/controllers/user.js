@@ -8,6 +8,28 @@ const mailer = require('../modules/mailer');
 const multer = require('../modules/multer');
 
 const user = {
+    checkNickname: async (req, res)=>{
+        const {nickname} = req.body;
+        if(!nickname){
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
+        }
+        const result = await UserModel.checkUserByNickname(nickname);
+        if(result.length!==0){
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ALREADY_NICKNAME));
+        }
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.AVAILABLE_NICKNAME, {nickname: nickname}));
+    },
+    checkEmail: async(req, res)=>{
+        const {email} = req.body;
+        if(!email){
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
+        }
+        const result = await UserModel.checkUserByEmail(email);
+        if(result.length!==0){
+            return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ALREADY_EMAIL));
+        }
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.AVAILABLE_EMAIL, {email: email}));
+    },
     signup : async (req, res) => {
         const {
             nickname,
@@ -19,6 +41,7 @@ const user = {
             return res.status(statusCode.OK)
                 .send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
         }
+        /*
         // 사용중인 아이디가 있는지 확인
         let result = await UserModel.checkUserByName(nickname);
         if (result.length > 0) {
@@ -32,7 +55,7 @@ const user = {
             return res.status(statusCode.OK)
                 .send(util.fail(statusCode.OK, resMessage.ALREADY_EMAIL));
         }
-
+        */
         if(password !== passwordConfirm){
             return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.DIFFERENT_PW));
         }

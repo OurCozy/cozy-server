@@ -22,18 +22,17 @@ const user = {
             throw err;
         }
     },
-    checkUserByName: async (nickname) => {
-        const query = `SELECT * FROM ${table} WHERE nickname = '${nickname}';`;
-        try {
+    checkUserByNickname: async(nickname)=>{
+        const query = `select * from ${table} where nickname='${nickname}';`;
+        try{
             const result = await pool.queryParam(query);
-            console.log(result);
             return result;
-        } catch (err) {
+        }catch(err){
             if (err.errno == 1062) {
-                console.log('checkUser ERROR : ', err.errno, err.code);
+                console.log('checkUserByNickname ERROR : ', err.errno, err.code);
                 throw err;
             }
-            console.log('checkUser ERROR : ', err);
+            console.log('checkUserByNickname ERROR : ',err);
             throw err;
         }
     },
