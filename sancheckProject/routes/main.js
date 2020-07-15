@@ -45,7 +45,10 @@ router.get('/search/:keyword', AuthMiddleware.checkToken, mainController.search)
  */
 router.get('/detail/review/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showAllReview);
 router.get('/detail/review2/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showTwoReviews);
-router.put('/update/review/:reviewIdx', AuthMiddleware.checkToken, mainController.updateReview);
+//수정 버튼 클릭
+router.get('/update/review/:reviewIdx', AuthMiddleware.checkToken, mainController.updateReview);
+//수정 후 저장버튼 클릭
+router.put('/update/review/:reviewIdx', AuthMiddleware.checkToken, mainController.storeUpdateReview);
 router.delete('/delete/review/:reviewIdx', AuthMiddleware.checkToken, mainController.deleteReview);
 
 // update bookstore profile image

@@ -232,13 +232,23 @@ const bookstore = {
             throw err;
         }
     },
-    updateReview: async(reviewIdx, stars, content)=>{
+    updateReview: async(reviewIdx)=>{
+        const query = `select * from ${reviewTable} where reviewIdx=${reviewIdx};`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch(err){
+            console.log('updateReview ERROR : ',err);
+            throw err;
+        }
+    },
+    storeUpdatedReview: async(reviewIdx, stars, content)=>{
         const query = `update ${reviewTable} set stars =${stars}, content = '${content}' where reviewIdx = ${reviewIdx}`;
         try{
             await pool.queryParam(query);
             return;
         }catch(err){
-            console.log('updateReview ERROR : ',err);
+            console.log('storeUpdatedReview ERROR : ',err);
             throw err;
         }
     },

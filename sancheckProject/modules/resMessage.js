@@ -70,6 +70,7 @@ module.exports = {
     ERROR_IN_UPDATE_REVIEW: '후기 수정 실패',
     SUCCESS_UPDATE_REVIEW_PHOTO: '후기 사진 업데이트 성공',
     FAIL_UPDATE_REVIEW_PHOTO: '후기 사진 업데이트 실패', 
+    REVIEW_UPDATING: '후기 수정 중...',
     
     DB_ERROR: 'DB 오류'
 };

@@ -237,6 +237,15 @@ const main = {
     },
     updateReview: async(req, res)=>{
         const reviewIdx = req.params.reviewIdx;
+        try{
+            const result = await MainModel.updateReview(reviewIdx);
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.REVIEW_UPDATING, result))
+        }catch(err){
+            res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+    },
+    storeUpdateReview: async(req, res)=>{
+        const reviewIdx = req.params.reviewIdx;
         let {stars, content, photo}= req.body;
         try{
             if(!stars || !content){
@@ -245,7 +254,7 @@ const main = {
             if(photo === undefined){
                 photo = null;
             }
-            await MainModel.updateReview(reviewIdx, stars, content, photo);
+            await MainModel.storeUpdatedReview(reviewIdx, stars, content, photo);
             res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_REVIEW,{reviewIdx: reviewIdx}));
         }catch(err){
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
