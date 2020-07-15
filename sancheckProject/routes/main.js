@@ -43,7 +43,7 @@ router.get('/search/:keyword', AuthMiddleware.checkToken, mainController.search)
 /**
  * 📌 후기
  */
-router.get('/detail/review/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showAllReview);
+router.get('/detail/review/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showReviews);
 router.get('/detail/review2/:bookstoreIdx', AuthMiddleware.checkToken, mainController.showTwoReviews);
 //수정 버튼 클릭
 router.get('/update/review/:reviewIdx', AuthMiddleware.checkToken, mainController.updateReview);

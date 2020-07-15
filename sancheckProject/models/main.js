@@ -230,8 +230,11 @@ const bookstore = {
             throw err;
         }
     },
-    showAllReview: async(bookstoreIdx)=>{
-        const query = `select * from ${reviewTable} where bookstoreIdx = ${bookstoreIdx} order by reviewIdx DESC;`;
+    showReviews: async(userIdx, bookstoreIdx)=>{
+        const query = `SELECT r.*, u.nickname, u.profile FROM ${reviewTable} r, ${userTable} u 
+                        WHERE r.bookstoreIdx = ${bookstoreIdx} 
+                        AND u.userIdx = ${userIdx}
+                        ORDER BY r.reviewIdx DESC;`;
         try{
             const result = await pool.queryParam(query);
             return result;

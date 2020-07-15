@@ -209,10 +209,11 @@ const main = {
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
     },
-    showAllReview: async(req, res)=>{
+    showReviews: async(req, res)=>{
+        const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         try{
-            const result = await MainModel.showAllReview(bookstoreIdx);
+            const result = await MainModel.showReviews(userIdx, bookstoreIdx);
             if(result.length === 0){
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
             }else{
@@ -226,7 +227,7 @@ const main = {
         const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         try {
-            const result = await MainModel.showAllReview(bookstoreIdx);
+            const result = await MainModel.showReviews(userIdx, bookstoreIdx);
             console.log(result);
             if (result.length === 0) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
