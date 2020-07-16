@@ -201,7 +201,10 @@ const user = {
             } = await encrypt.encrypt(newPW);
             await UserModel.updateNewPW(userEmail, hashed, salt);
             mailer.sendGmail(emailParam);
-            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SEND_EMAIL_SUCCESS, emailParam))
+            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SEND_EMAIL_SUCCESS, {
+                toEmail : userEmail,
+                subject: 'New Email From COZY'
+            }))
         }catch(err){
             console.log('find PW by email mailer ERR : ',err);
             throw err;
