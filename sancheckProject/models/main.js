@@ -165,7 +165,18 @@ const bookstore = {
     searchByKeyword: async (keyword) => {
         //const match = 'bookstoreName, location, activity, shortIntro, shortIntro2, description, hashtag1, hashtag2, hashtag3';
         //const query = `select bookstoreIdx, ${match} from ${bookstoreTable} where match (${match}) against('+${keyword}*' in boolean mode) order by bookmark desc;`
-        const query = `select * from ${bookstoreTable} where binary bookstoreName like "%${keyword}%" or binary location like "%${keyword}%" or binary activity like "%${keyword}%" or binary shortIntro like "%${keyword}%" or binary shortIntro2 like "%${keyword}%" or binary description like "%${keyword}%" or binary hashtag1 like "%${keyword}%" or binary hashtag2 like "%${keyword}%" or binary hashtag3 like "%${keyword}%" order by bookmark desc`;
+        const query = `select bs.*, i.image1 from ${bookstoreTable} bs, ${imagesTable} i 
+                        where bs.bookstoreIdx = i.bookstoreIdx 
+                        and (binary bs.bookstoreName like "%${keyword}%" 
+                        or binary location like "%${keyword}%" 
+                        or binary activity like "%${keyword}%" 
+                        or binary shortIntro like "%${keyword}%" 
+                        or binary shortIntro2 like "%${keyword}%" 
+                        or binary description like "%${keyword}%" 
+                        or binary hashtag1 like "%${keyword}%" 
+                        or binary hashtag2 like "%${keyword}%" 
+                        or binary hashtag3 like "%${keyword}%") 
+                        order by bookmark desc`;
         console.log('search query : ', query);
         try {
             const result = await pool.queryParam(query);
