@@ -336,11 +336,14 @@ const main = {
         const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         if(req.file === undefined) {
+            console.log('undefined-req.file: ', req.file)
             reviewPhoto = 'NULL';
-            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_PHOTO, {photo: reviewPhoto}));
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_PHOTO, {photo: reviewPhoto}));
+        } else {
+            console.log('req.file: ', req.file);
+            reviewPhoto = req.file.location;
         }
-        console.log('req.file: ', req.file);
-        reviewPhoto = req.file.location;
+        
 
         // data check - undefined
         if (reviewPhoto === undefined || !bookstoreIdx) {
