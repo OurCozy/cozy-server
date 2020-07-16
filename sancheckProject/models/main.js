@@ -246,7 +246,7 @@ const bookstore = {
         const query = `SELECT r.*, u.nickname, u.profile FROM ${reviewTable} r, ${userTable} u 
                         WHERE r.bookstoreIdx = ${bookstoreIdx} 
                         AND u.userIdx = r.userIdx
-                        ORDER BY r.reviewIdx DESC;`;
+                        ORDER BY r.createdAt DESC;`;
         try{
             const result = await pool.queryParam(query);
             return result;
