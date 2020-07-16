@@ -13,7 +13,7 @@
     
 * 프로젝트 기간: 2020.06.27 ~ 2020.07.18
 
-* [API 명세서](https://github.com/OurCozy/cozy-server/wiki/)</b>
+* [API 명세서](https://github.com/OurCozy/cozy-server/wiki/HOME%F0%9F%93%9A)</b>
 
 <br>
 
