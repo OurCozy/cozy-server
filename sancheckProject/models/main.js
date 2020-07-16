@@ -220,7 +220,7 @@ const bookstore = {
         let query = `insert into ${reviewTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, '${content}', '${photo}', ${stars}, '${date}')`;
         try{
             let result = await pool.queryParam(query);
-            query = `SELECT r.*, u.nickname, u.profile FROM ${reviewTable} r, ${userTable} u WHERE r.reviewIdx = ${result.insertId} AND r.userIdx = ${userIdx};`;
+            query = `SELECT r.*, u.nickname, u.profile FROM ${reviewTable} r, ${userTable} u WHERE r.reviewIdx = ${result.insertId} and u.userIdx=${userIdx}`;
             result = await pool.queryParam(query);
             return result;
         }catch(err){

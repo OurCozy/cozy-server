@@ -184,6 +184,7 @@ const main = {
         }
     },
     writeReview : async (req, res) => {
+        console.log('writeReview reviewPhoto : ',reviewPhoto);
         const userIdx = req.decoded.userIdx;
         let {bookstoreIdx, content, stars} = req.body;
         try{
@@ -191,6 +192,7 @@ const main = {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             }
             const result = await MainModel.writeReview(userIdx, bookstoreIdx, content, reviewPhoto, stars);
+            
             if(result === undefined){
                 res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ERROR_IN_INSERT_REVIEW));
             }else{
@@ -344,7 +346,6 @@ const main = {
             reviewPhoto = req.file.location;
         }
         
-
         // data check - undefined
         if (reviewPhoto === undefined || !bookstoreIdx) {
             return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
@@ -358,9 +359,7 @@ const main = {
         // 결과값은 프로필에 대한 이미지 전달
         // const result = await MainModel.updateReviewPhoto(bookstoreIdx, reviewPhoto);
         
-        // res.redirect(`/main/detail/${bookstoreIdx}`); // 위치 지정해서 detail 뷰로 가능
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SUCCESS_UPDATE_REVIEW_PHOTO, {photo: reviewPhoto}));
-
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SUCCESS_UPDATE_REVIEW_PHOTO, {photo: reviewPhoto}));
     }
 }
 
