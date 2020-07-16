@@ -115,7 +115,7 @@ const main = {
             if(interest.length === 0){
                 const nickname = await MainModel.selectNickname(userIdx);
                 console.log('nickname: ', nickname);
-                return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_DATA, {
+                return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_DATA, [{
                     bookstoreIdx: 0,
                     bookstoreName: "NULL",
                     profile: "NULL",
@@ -124,7 +124,7 @@ const main = {
                     hashtag3: "NULL",
                     nickname: nickname[0].nickname,
                     image1: "NULL"
-                }));
+                }]));
             }else{
                 console.log(interest);
                 return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_DATA_SUCCESS, interest));
