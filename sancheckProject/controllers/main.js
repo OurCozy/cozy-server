@@ -309,7 +309,7 @@ const main = {
         var obj =[];
         cookies.forEach(e => obj.push(e[0]));
         console.log('obj : ', obj)
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_BOOKSTORES, obj));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_BOOKSTORES, obj));
         
     },
     updateProfile: async (req, res) => {

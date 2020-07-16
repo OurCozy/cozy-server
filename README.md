@@ -17,7 +17,7 @@
 
 <br>
 
-# 1. Cozy란?
+# 1. Cozy란? 📚
 
 <b>세상의 모든 독립서점📚, Cozy 입니다.</b>
 <br>
@@ -26,15 +26,19 @@
 
 <br>
 
-# 2. Main Function
+# 2. Main Function 📚
 
-* 북마크 순으로 정렬된 상위 8개 독립 서점 추천
-* 서점별 상세 정보 제공
-* 지역별 독립 서점 조회
-* 관심 책방 등록 및 조회
-* 후기 작성 및 조회
-* 키워드 검색
-* 최근 본 책방 조회
+- 북마크 순으로 정렬된 상위 8개 독립 서점 추천
+- 서점별 상세 정보 제공
+- 지역별 독립 서점 조회
+  - 관심 책방 등록 및 조회
+  - 후기 작성
+  - 후기 조회
+- 내 정보 조회
+  - 최근 본 책방 조회
+  - 내가 쓴 후기 조회
+- 키워드 및 텍스트로 책방 검색
+
 
 # 2 - 1 Function detail
 
@@ -51,7 +55,7 @@
 # 4. ER Diagram  
 
 <div align="center" style="display:flex;">
-	<img src="./sancheckProject/image/erd_modified.png">
+	<img src="./sancheckProject/image/erd.png">
 </div>
 
 # 5. dependencies module (package.json)
@@ -69,9 +73,13 @@
     "http-errors": "^1.6.3",
     "jade": "^1.11.0",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.27.0",
+    "moment-timezone": "^0.5.31",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
+    "nodemailer": "^6.4.10",
+    "nodemailer.js": "0.0.2-security",
     "nodemon": "^2.0.4",
     "pbkdf2": "^3.1.1",
     "promise-mysql": "^4.1.3",
@@ -90,8 +98,8 @@
 - **pbkdf2** : hash 를 생성할 때 마다 다른 salt 를 사용하지만, 암호화를 할 때 사용했던 salt 를 그대로 사용하면 hash 값도 같기 때문에 이를 활용해 비밀번호를 안전하게 저장
 - **promise-mysql** : async/await를 편하게 사하기 위한 모듈
 - **rand-token** : 랜덤 토큰 생성 도구
- 
-
+- **nodemailer** : e-mail을 쉽게 보낼 수 있게 도와주는 모듈
+- **moment** : 날짜와 시간을 다루는 모듈
 # 6. 사용된 도구
 
 * [Node.js](https://nodejs.org/ko/)
@@ -112,17 +120,27 @@
 
 ####  김가인📕
 
-- 로그인, 회원가입, 프로필 사진 업데이트, 내 정보 조회 기능 구현
+- 로그인, 회원가입, 토큰 인증
+- 내 프로필 사진 업데이트, 내 정보 조회 기능 구현
 - 지역별 조회 기능 구현
+- 키워드 및 텍스트 검색 구현
+- 최근 본 책방 구현
 - API 명세서 작성 
 
 ####  홍민정📗
 
 - DB 설계
-- 이미지 업데이트, 관심 책방 조회 기능 구현
+- 비밀번호 찾기, 이메일 및 닉네임 중복 확인 구현
+- 책방 이미지 업데이트
+- 관심 책방 조회 기능 구현
+- 후기 작성, 조회, 수정, 삭제, 이미지 업로드
 - API 명세서 작성
 
 ####  정형일📘
 
-- 책방 소개, 책방 자세히 기능 구현
+- DB 설계
+- 상위 8개 독립 서점 추천 구현
+- 책방 자세히 보기 기능 구현
+- API 명세서 작성
 - README.md 작성
+- (미완성) 소셜 로그인
