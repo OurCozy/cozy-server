@@ -300,12 +300,17 @@ const main = {
 
         console.log(bookstores);
 
+        
         // json 객체 담을 배열
         var cookies=[];
         for(var i=bookstores.length-1;i>=0;i--){
             cookies.push(await MainModel.selectProfile(bookstores[i]));
         }
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_BOOKSTORES, cookies));
+        var obj =[];
+        cookies.forEach(e => obj.push(e[0]));
+        console.log('obj : ', obj)
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_BOOKSTORES, obj));
+        
     },
     updateProfile: async (req, res) => {
         // 데이터 받아오기
