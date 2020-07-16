@@ -69,7 +69,7 @@ module.exports = {
     UPDATE_REVIEW: '후기 수정 성공',
     ERROR_IN_UPDATE_REVIEW: '후기 수정 실패',
     SUCCESS_UPDATE_REVIEW_PHOTO: '후기 사진 업데이트 성공',
-    FAIL_UPDATE_REVIEW_PHOTO: '후기 사진 업데이트 실패', 
+    NO_PHOTO: '업데이트할 후기 사진이 없습니다.', 
     REVIEW_UPDATING: '후기 수정 중...',
     
     DB_ERROR: 'DB 오류'

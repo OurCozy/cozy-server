@@ -12,7 +12,7 @@ const main = {
         const userIdx = req.decoded.userIdx;
         // var autoLogin = req.cookies.autoLogin;
         // console.log(autoLogin);
-        const bookstore = await MainModel.showRecommendation();
+        const bookstore = await MainModel.showRecommendation(userIdx);
         try {
             if (!bookstore.length) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_DATA));
@@ -64,7 +64,7 @@ const main = {
         console.log('result[0] : ',result[0].bookstoreIdx);
         console.log('bookstores <cookies> : ',bookstores);
         res.cookie('bookstores', bookstores, {
-            maxAge: 1000000
+            maxAge: 60*60*1000*24
         });
         const bookstore = await MainModel.showDetail(userIdx, bookstoreIdx);
         try {
@@ -77,7 +77,6 @@ const main = {
         }
     },
     showLocation : async (req, res) => {
-        
         const sectionIdx = req.params.sectionIdx;
         const userIdx = req.decoded.userIdx;
         console.log('sectionIdx: ',sectionIdx);
@@ -143,7 +142,7 @@ const main = {
             if(result === 0){
                 message = '북마크 해제';
             }
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_SUCCESS, {message: message, checked: result}));
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_SUCCESS, {checked: result}));
         } catch (err) {
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
@@ -188,9 +187,7 @@ const main = {
         const userIdx = req.decoded.userIdx;
         let {bookstoreIdx, content, stars} = req.body;
         try{
-            console.log('reviewPhoto: ', reviewPhoto);
             if (!bookstoreIdx || !content || !stars) {
-                console.log('aa');
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             }
             const result = await MainModel.writeReview(userIdx, bookstoreIdx, content, reviewPhoto, stars);
@@ -198,23 +195,18 @@ const main = {
                 res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ERROR_IN_INSERT_REVIEW));
             }else{
                 res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.INSERT_REVIEW_SUCCESS, 
-                    {
-                        reviewIdx: result, 
-                        userIdx: userIdx,
-                        bookstoreIdx: bookstoreIdx,
-                        stars: stars, 
-                        content: content,
-                        photo: reviewPhoto
-                    }));
+                    result[0]
+                ));
             }
         }catch(err){
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
     },
-    showAllReview: async(req, res)=>{
+    showReviews: async(req, res)=>{
+        const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         try{
-            const result = await MainModel.showAllReview(bookstoreIdx);
+            const result = await MainModel.showReviews(userIdx, bookstoreIdx);
             if(result.length === 0){
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
             }else{
@@ -228,7 +220,7 @@ const main = {
         const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         try {
-            const result = await MainModel.showAllReview(bookstoreIdx);
+            const result = await MainModel.showReviews(userIdx, bookstoreIdx);
             console.log(result);
             if (result.length === 0) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
@@ -240,11 +232,12 @@ const main = {
         }
     },
     deleteReview: async(req, res)=>{
+        const userIdx = req.decoded.userIdx;
         const reviewIdx = req.params.reviewIdx;
         try{
             const result = await MainModel.deleteReview(reviewIdx);
             if(result === 1){
-                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_REVIEW, {reviewIdx:reviewIdx}));
+                res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_REVIEW, {reviewIdx: reviewIdx}));
             }else{
                 res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.ERROR_IN_DELETE_REVIEW));
             }
@@ -253,36 +246,36 @@ const main = {
         }
     },
     updateReview: async(req, res)=>{
+        const userIdx = req.decoded.userIdx;
         const reviewIdx = req.params.reviewIdx;
         try{
             const result = await MainModel.updateReview(reviewIdx);
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.REVIEW_UPDATING, result))
-        }catch(err){
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.REVIEW_UPDATING, result[0]))
+        } catch (err) {
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
     },
     storeUpdatedReview: async(req, res)=>{
+        const userIdx = req.decoded.userIdx;
         const reviewIdx = req.params.reviewIdx;
         let {stars, content}= req.body;
         try{
             if(!stars || !content){
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             }
-            // if( === undefined){
-            //     photo = null;
-            // }
+
             const result = await MainModel.storeUpdatedReview(reviewIdx, stars, content, reviewPhoto);
             res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_REVIEW,
-                {
-                    result
-                }));
+                    result[0]
+                ));
         }catch(err){
             res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
     },
     search : async (req, res) => {
         const userIdx = req.decoded.userIdx;
-        const keyword = req.params.keyword;
+        const keyword = decodeURI(req.params.keyword);
+        console.log('search keyword : ', keyword);
 
         // if (keyword === null) {
         //     return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_KEYWORD));
@@ -335,9 +328,11 @@ const main = {
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATE_PROFILE_SUCCESS, result));
     },
     updateReviewPhoto: async (req, res) => {
+        const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         if(req.file === undefined) {
-            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.FAIL_UPDATE_REVIEW_PHOTO, {reviewPhoto: reviewPhoto}));
+            reviewPhoto = 'NULL';
+            res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_PHOTO, {photo: reviewPhoto}));
         }
         console.log('req.file: ', req.file);
         reviewPhoto = req.file.location;
@@ -356,7 +351,7 @@ const main = {
         // const result = await MainModel.updateReviewPhoto(bookstoreIdx, reviewPhoto);
         
         // res.redirect(`/main/detail/${bookstoreIdx}`); // 위치 지정해서 detail 뷰로 가능
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SUCCESS_UPDATE_REVIEW_PHOTO, {reviewPhoto: reviewPhoto}));
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SUCCESS_UPDATE_REVIEW_PHOTO, {photo: reviewPhoto}));
 
     }
 }

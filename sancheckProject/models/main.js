@@ -9,14 +9,13 @@ const bookmarksTable = 'bookmarks';
 const userTable = 'user';
 const reviewTable = 'review';
 
-var checked = 0;
-
 const bookstore = {
-    showRecommendation: async () => {
-        const fields = 'bookstoreIdx, profile, shortIntro, shortIntro2, bookstoreName, location';
-        // const questions = `?, ?, ?, ?, ?`;
-        // const values = [id, name, password, salt, email];
-        const query = `SELECT ${fields} FROM ${bookstoreTable} WHERE profile != 'NULL' AND shortIntro != 'NULL' ORDER BY bookmark DESC LIMIT 8;`;
+    showRecommendation: async (userIdx) => {
+        const query = `SELECT bs.bookstoreIdx, bs.profile, bs.shortIntro, bs.shortIntro2, bs.bookstoreName, bs.location, u.nickname FROM ${bookstoreTable} bs, ${userTable} u 
+                        WHERE bs.profile != 'NULL' 
+                        AND bs.shortIntro != 'NULL' 
+                        AND userIdx = ${userIdx}
+                        ORDER BY bs.bookmark DESC LIMIT 8;`;
         try {
             const result = await pool.queryParam(query);
             return result;
@@ -44,40 +43,36 @@ const bookstore = {
         }
     },
     showLocation: async (userIdx, sectionIdx) => {
-        // bookmarkIdx, checked
-        const bookmark = `SELECT bs.bookstoreIdx, bm.checked FROM ${bookstoreTable} bs, ${bookmarksTable} bm 
-                        WHERE bs.bookstoreIdx = bm.bookstoreIdx 
-                        AND sectionIdx = ${sectionIdx} 
-                        AND userIdx = ${userIdx};`;
-
         // location section별로
         const location = `SELECT bs.bookstoreIdx, bs.bookstoreName, bs.hashtag1, bs.hashtag2, bs.hashtag3, bs.profile, i.image1 from ${bookstoreTable} bs, ${imagesTable} i 
                         WHERE bs.sectionIdx = ${sectionIdx} 
                         AND bs.bookstoreIdx = i.bookstoreIdx;`;
 
         // checked된 책방만 seciton별로
-        const query = `select bs.bookstoreIdx, bs.bookstoreName, bs.hashtag1, bs.hashtag2, bs.hashtag3, bs.profile, i.image1 from bookstore bs, images i, bookmarks bm
-        where bs.sectionIdx = ${sectionIdx} and bs.bookstoreIdx = i.bookstoreIdx and bs.bookstoreIdx = bm.bookstoreIdx and bm.userIdx=${userIdx};`;
+        const query = `SELECT bs.bookstoreIdx, bs.bookstoreName, bs.hashtag1, bs.hashtag2, bs.hashtag3, bs.profile, i.image1 from bookstore bs, images i, bookmarks bm
+        where bs.sectionIdx = ${sectionIdx} and bs.bookstoreIdx = i.bookstoreIdx and bs.bookstoreIdx = bm.bookstoreIdx and bm.userIdx = ${userIdx};`;
 
+        // const query = `select bs.bookstoreIdx, bs.bookstoreName, bs.hashtag1, bs.hashtag2, bs.hashtag3, bs.profile, i.image1, bm.checked from ${bookstoreTable} bs, ${imagesTable} i, ${bookmarksTable} bm
+        // where bs.sectionIdx = ${sectionIdx} and bs.bookstoreIdx = i.bookstoreIdx and bs.bookstoreIdx = bm.bookstoreIdx;`;
 
         try {
-            var locationResult = await pool.queryParam(location);
-            var queryResult = await pool.queryParam(query);
-            console.log('locationResult : ', locationResult);
-            console.log('queryResult : ', queryResult);
+            let locationResult = await pool.queryParam(location);
+            // let bookmarkResult = await pool.queryParam(bookmark);
+            let queryResult = await pool.queryParam(query);
+
             for (var a in locationResult) {
                 var checked=0;
                 for (var b in queryResult) {
-                    if (locationResult[a].bookstoreIdx === queryResult[b].bookstoreIdx) {
+                    if(locationResult[a].bookstoreIdx === queryResult[b].bookstoreIdx){
+                        console.log('success');
                         checked = 1;
-                        locationResult[a].checked = checked;
                         break;
                     }
                 }
                 locationResult[a].checked = checked;
-                console.log('locationResult[a] : ', locationResult[a]);
-                
+                locationResult[a].count = locationResult.length;
             }
+            
             return locationResult;
         } catch (err) {
             if (err.errno == 1062) {
@@ -87,6 +82,7 @@ const bookstore = {
             console.log('show location ERROR : ', err);
             throw err;
         }
+
     },
     checkInterest: async(userIdx, bookstoreIdx)=>{
         const query = `select * from ${bookmarksTable} where userIdx = ${userIdx} and bookstoreIdx=${bookstoreIdx}`;
@@ -167,8 +163,10 @@ const bookstore = {
         }
     },
     searchByKeyword: async (keyword) => {
-        const match = 'bookstoreName, location, activity, shortIntro, shortIntro2, description, hashtag1, hashtag2, hashtag3';
-        const query = `select bookstoreIdx, ${match} from ${bookstoreTable} where match (${match}) against('+${keyword}*' in boolean mode) order by bookmark desc;`
+        //const match = 'bookstoreName, location, activity, shortIntro, shortIntro2, description, hashtag1, hashtag2, hashtag3';
+        //const query = `select bookstoreIdx, ${match} from ${bookstoreTable} where match (${match}) against('+${keyword}*' in boolean mode) order by bookmark desc;`
+        const query = `select * from ${bookstoreTable} where binary bookstoreName like "%${keyword}%" or binary location like "%${keyword}%" or binary activity like "%${keyword}%" or binary shortIntro like "%${keyword}%" or binary shortIntro2 like "%${keyword}%" or binary description like "%${keyword}%" or binary hashtag1 like "%${keyword}%" or binary hashtag2 like "%${keyword}%" or binary hashtag3 like "%${keyword}%" order by bookmark desc`;
+        console.log('search query : ', query);
         try {
             const result = await pool.queryParam(query);
             return result;
@@ -209,10 +207,11 @@ const bookstore = {
         const date = moment().format('YYYY년 M월 D일 HH:mm 작성');
         console.log(date);
         let query = `insert into ${reviewTable} (${fields}) values (${userIdx}, ${bookstoreIdx}, '${content}', '${photo}', ${stars}, '${date}')`;
-        // NOW() 값 변경하기
         try{
-            const result = await pool.queryParam(query);
-            return result.insertId;
+            let result = await pool.queryParam(query);
+            query = `SELECT r.*, u.nickname, u.profile FROM ${reviewTable} r, ${userTable} u WHERE r.reviewIdx = ${result.insertId} AND r.userIdx = ${userIdx};`;
+            result = await pool.queryParam(query);
+            return result;
         }catch(err){
             console.log('writeReview ERROR : ',err);
             throw err;
@@ -232,8 +231,11 @@ const bookstore = {
             throw err;
         }
     },
-    showAllReview: async(bookstoreIdx)=>{
-        const query = `select * from ${reviewTable} where bookstoreIdx = ${bookstoreIdx} order by reviewIdx DESC;`;
+    showReviews: async(userIdx, bookstoreIdx)=>{
+        const query = `SELECT r.*, u.nickname, u.profile FROM ${reviewTable} r, ${userTable} u 
+                        WHERE r.bookstoreIdx = ${bookstoreIdx} 
+                        AND u.userIdx = ${userIdx}
+                        ORDER BY r.reviewIdx DESC;`;
         try{
             const result = await pool.queryParam(query);
             return result;
@@ -263,7 +265,8 @@ const bookstore = {
         }
     },
     storeUpdatedReview: async(reviewIdx, stars, content, reviewPhoto)=>{
-        let query = `update ${reviewTable} set stars =${stars}, content = '${content}', photo = '${reviewPhoto}' where reviewIdx = ${reviewIdx}`;
+        const date = moment().format('YYYY년 M월 D일 HH:mm 수정');
+        let query = `update ${reviewTable} set stars =${stars}, content = '${content}', photo = '${reviewPhoto}', createdAt = '${date}' where reviewIdx = ${reviewIdx}`;
         try{
             await pool.queryParam(query);
             query = `SELECT * FROM ${reviewTable} WHERE reviewIdx = ${reviewIdx};`; 

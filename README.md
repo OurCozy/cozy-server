@@ -1,11 +1,11 @@
-<h1 align="center"> Cozy_server  </h1>
+<h1 align="center"> 📌Cozy SERVER📌  </h1>
 
 
 <p align="center">
 <div align="center" style="display:flex;">
 	<img src="./sancheckProject/image/cozy.png" width="250">
 </div>
-  바쁜 도심 속 휴식처, 공간과 경험을 파는 세상의 모든 독립서점 📚
+  세상의 모든 독립서점, Cozy 📚
 </p>
 
 
@@ -13,13 +13,13 @@
     
 * 프로젝트 기간: 2020.06.27 ~ 2020.07.18
 
-* [API 문서](https://github.com/OurCozy/cozy-server/wiki)</b>
+* [API 명세서](https://github.com/OurCozy/cozy-server/wiki)</b>
 
 <br>
 
 # 1. Cozy란?
 
-<b>바쁜 도심 속 휴식처, 공간과 경험을 파는 세상의 모든 독립서점 📚, Cozy 입니다.</b>
+<b>세상의 모든 독립서점📚, Cozy 입니다.</b>
 <br>
 코지(Cozy)는 분산화되어있는 다양한 독립서점의 정보들을 모아놓고, 정보 큐레이션 및 리뷰를 위해 만들어진 서비스 입니다.
 </br>
