@@ -176,8 +176,8 @@ const bookstore = {
                         or binary hashtag1 like "%${keyword}%" 
                         or binary hashtag2 like "%${keyword}%" 
                         or binary hashtag3 like "%${keyword}%") 
-                        order by bookmark desc`;
-        console.log('search query : ', query);
+                        order by bookmark desc;`;
+        // console.log('search query : ', query);
         try {
             const result = await pool.queryParam(query);
             return result;

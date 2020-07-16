@@ -2,6 +2,7 @@ const MainModel = require('../models/main'); // 스키마 불러오기
 const statusCode = require('../modules/statusCode');
 const resMessage = require('../modules/resMessage');
 const util = require('../modules/util');
+const hangul = require('hangul-js');
 
 var count = 0;
 var obj = [];
@@ -222,7 +223,7 @@ const main = {
         const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         try {
-            const result = await MainModel.showReviews(userIdx, bookstoreIdx);
+            const result = await MainModel.showReviews(bookstoreIdx);
             console.log(result);
             if (result.length === 0) {
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
@@ -278,6 +279,11 @@ const main = {
         const userIdx = req.decoded.userIdx;
         const keyword = decodeURI(req.params.keyword);
         console.log('search keyword : ', keyword);
+
+        // isConsonant: 주어진 문자가 자음인지 판단
+        if (hangul.isConsonantAll(keyword)) {
+            console.log('한글로만 이루어져 있습니다!');
+        }
 
         // if (keyword === null) {
         //     return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_KEYWORD));
