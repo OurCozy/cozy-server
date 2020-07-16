@@ -206,7 +206,7 @@ const main = {
         const userIdx = req.decoded.userIdx;
         const bookstoreIdx = req.params.bookstoreIdx;
         try{
-            const result = await MainModel.showReviews(userIdx, bookstoreIdx);
+            const result = await MainModel.showReviews(bookstoreIdx);
             if(result.length === 0){
                 return res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NO_REVIEW));
             }else{
