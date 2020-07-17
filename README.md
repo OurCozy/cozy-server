@@ -144,7 +144,7 @@
 
 ####  김가인📕
 
-<div align="center" style="display:flex;">
+<div align="left" style="display:flex;">
 	<img src="./sancheckProject/image/gain.jpg" width="250">
 </div>
 
@@ -158,7 +158,7 @@
 
 ####  홍민정📗
 
-<div align="center" style="display:flex;">
+<div align="left" style="display:flex;">
 	<img src="./sancheckProject/image/minjeong.jpg" width="250">
 </div>
 
@@ -172,7 +172,7 @@
 
 ####  정형일📘
 
-<div align="center" style="display:flex;">
+<div align="left" style="display:flex;">
 	<img src="./sancheckProject/image/hyungil.jpg" width="250">
 </div>
 
