@@ -83,7 +83,7 @@ const user = {
             password,
             //autoLogin
         } = req.body;
-
+        
         if (!email || !password) {
             res.status(statusCode.OK).send(util.fail(statusCode.OK, resMessage.NULL_VALUE));
             return;
@@ -128,6 +128,8 @@ const user = {
 
         user[0].accessToken = token;
         
+        res.clearCookie('bookstores');
+
         res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, {
                 userIdx: user[0].userIdx,
