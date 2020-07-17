@@ -5,9 +5,9 @@
 <div align="center" style="display:flex;">
 	<img src="./sancheckProject/image/cozy.png" width="250">
 </div>
+  </br>
   세상의 모든 독립서점, Cozy 📚
 </p>
-
 
 * <b> SOPT 26th APPJAM
     
@@ -15,18 +15,20 @@
 
 * [API 명세서](https://github.com/OurCozy/cozy-server/wiki/HOME%F0%9F%93%9A)</b>
 
+* [Notion](https://www.notion.so/75d5a7f9c7c345f0984ed7661c79e0a2)</b>
+
 <br>
 
 # 1. Cozy란? 📚
 
-<b>세상의 모든 독립서점📚, Cozy 입니다.</b>
+<b>세상의 모든 독립서점, Cozy📚 입니다.</b>
 <br>
 코지(Cozy)는 분산화되어있는 다양한 독립서점의 정보들을 모아놓고, 정보 큐레이션 및 리뷰를 위해 만들어진 서비스 입니다.
 </br>
 
 <br>
 
-# 2. Main Function 📚
+# 2. Main Function 
 
 - 북마크 순으로 정렬된 상위 8개 독립 서점 추천
 - 서점별 상세 정보 제공
@@ -43,7 +45,7 @@
 # 2 - 1 Function detail
 
 <div align="center" style="display:flex;">
-	<img src="https://user-images.githubusercontent.com/43127088/86893684-fae91800-c13c-11ea-886c-c04f72a587ef.PNG">
+	<img src="./sancheckProject/image/fm.png">
 </div>
 
 # 3. Server Architecture  
@@ -120,15 +122,23 @@
 
 ####  김가인📕
 
+<div align="center" style="display:flex;">
+	<img src="./sancheckProject/image/gain.jpg" width="250">
+</div>
+
 - 로그인, 회원가입, 토큰 인증
 - 내 프로필 사진 업데이트, 내 정보 조회 기능 구현
 - 지역별 조회 기능 구현
 - 북마크 업데이트 기능 구현
 - 키워드 및 텍스트 검색 구현
 - 최근 본 책방 구현
-- API 명세서 작성 
+- API 명세서 작성
 
 ####  홍민정📗
+
+<div align="center" style="display:flex;">
+	<img src="./sancheckProject/image/minjeong.jpg" width="250">
+</div>
 
 - DB 설계
 - 비밀번호 찾기, 이메일 및 닉네임 중복 확인 구현
@@ -140,9 +150,13 @@
 
 ####  정형일📘
 
+<div align="center" style="display:flex;">
+	<img src="./sancheckProject/image/hyungil.jpg" width="250">
+</div>
+
 - DB 설계
 - 상위 8개 독립 서점 추천 구현
 - 책방 자세히 보기 기능 구현
 - API 명세서 작성
 - README.md 작성
-- (미완성) 소셜 로그인
+- 유지 보수

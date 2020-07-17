@@ -4,10 +4,6 @@ const resMessage = require('../modules/resMessage');
 const util = require('../modules/util');
 const hangul = require('hangul-js');
 
-var count = 0;
-var obj = [];
-var reviewPhoto = "NULL";
-
 const main = {
     showRecommendation : async (req, res) => {
         const userIdx = req.decoded.userIdx;
@@ -345,11 +341,11 @@ const main = {
         const bookstoreIdx = req.params.bookstoreIdx;
         if(req.file === undefined) {
             console.log('undefined-req.file: ', req.file)
-            reviewPhoto = 'NULL';
+            var reviewPhoto = 'NULL';
             return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_PHOTO, {photo: reviewPhoto}));
         } else {
             console.log('req.file: ', req.file);
-            reviewPhoto = req.file.location;
+            var reviewPhoto = req.file.location;
         }
         
         // data check - undefined
@@ -365,7 +361,8 @@ const main = {
         // 결과값은 프로필에 대한 이미지 전달
         // const result = await MainModel.updateReviewPhoto(bookstoreIdx, reviewPhoto);
         
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SUCCESS_UPDATE_REVIEW_PHOTO, {photo: reviewPhoto}));
+        // return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SUCCESS_UPDATE_REVIEW_PHOTO, {photo: reviewPhoto}));
+        return reviewPhoto;
     }
 }
 
