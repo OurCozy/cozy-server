@@ -13,11 +13,17 @@
     
 * 프로젝트 기간: 2020.06.27 ~ 2020.07.18
 
-* [API 명세서](https://github.com/OurCozy/cozy-server/wiki/HOME%F0%9F%93%9A)</b>
+* [API 명세서](https://github.com/OurCozy/cozy-server/wiki/HOME%F0%9F%93%9A)
 
 * [Notion](https://www.notion.so/75d5a7f9c7c345f0984ed7661c79e0a2)</b>
 
-<br>
+</br>
+
+<div align="center" style="display:flex;">
+	<img src="./sancheckProject/image/cozy_workflow.png" width="80%">
+</div>
+
+</br>
 
 # 1. Cozy란? 📚
 
@@ -28,7 +34,22 @@
 
 <br>
 
-# 2. Main Function 
+# 2. Team Core Value 👬👭
+
+- 책임감 💪
+  - 약속 시간 지키기 
+  - 맡은 일 다하기
+  - 서로의 업무 공유하기
+  - 답장 열심히 하기
+- 존중 🙏
+  - 서로의 일에 관심을 갖고 많은 얘기 나누기
+  - 힘들고 지친 순간에도 팀원을 배려하기
+- 편안함 🤸‍♀️
+  - 앱잼 즐기기 ❗❗
+
+<br>
+
+# 3. Main Function 📚
 
 - 북마크 순으로 정렬된 상위 8개 독립 서점 추천
 - 서점별 상세 정보 제공
@@ -42,25 +63,25 @@
 - 키워드 및 텍스트로 책방 검색
 
 
-# 2 - 1 Function detail
+# 3 - 1 Function detail
 
 <div align="center" style="display:flex;">
 	<img src="./sancheckProject/image/fm.png">
 </div>
 
-# 3. Server Architecture  
+# 4. Server Architecture  
 <div align="center" style="display:flex;">
 	<img src="./sancheckProject/image/architecture.png">
 </div>
 
 
-# 4. ER Diagram  
+# 5. ER Diagram  
 
 <div align="center" style="display:flex;">
 	<img src="./sancheckProject/image/erd.png">
 </div>
 
-# 5. dependencies module (package.json)
+# 6. dependencies module (package.json)
 
 👇 사용 패키지(모듈)
 
@@ -102,7 +123,8 @@
 - **rand-token** : 랜덤 토큰 생성 도구
 - **nodemailer** : e-mail을 쉽게 보낼 수 있게 도와주는 모듈
 - **moment** : 날짜와 시간을 다루는 모듈
-# 6. 사용된 도구
+
+# 7. 사용된 도구
 
 * [Node.js](https://nodejs.org/ko/)
 * [Express.js](http://expressjs.com/ko/) 
@@ -112,13 +134,13 @@
 * [MySQL Workbench](https://www.mysql.com/products/workbench/) - MySQL editor
 
 
-# 7. 배포
+# 8. 배포
 
 * AWS EC2 - 클라우드 컴퓨팅 시스템
 * AWS S3 - 클라우드 데이터 저장소
 * AWS RDS - 클라우드 환경 데이터베이스 관리 시스템
 
-# 8. Team Role
+# 9. Team Role
 
 ####  김가인📕
 

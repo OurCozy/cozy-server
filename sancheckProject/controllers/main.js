@@ -4,6 +4,8 @@ const resMessage = require('../modules/resMessage');
 const util = require('../modules/util');
 const hangul = require('hangul-js');
 
+var reviewPhoto;
+
 const main = {
     showRecommendation : async (req, res) => {
         const userIdx = req.decoded.userIdx;
@@ -303,7 +305,6 @@ const main = {
         }
 
         console.log(bookstores);
-
         
         // json 객체 담을 배열
         var cookies=[];
