@@ -1,7 +1,7 @@
 const pool = require('../modules/pool');
 var moment = require('moment');
 require('moment-timezone');
-moment.tz.setDefault("Asia/Seoul");
+moment.tz.setDefault("Asia/Seoul"); 
 
 const bookstoreTable = 'bookstore';
 const imagesTable = 'images';
