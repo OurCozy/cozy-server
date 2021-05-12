@@ -21,7 +21,7 @@
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
-    "nodemailer": "^6.4.10",
+    "nodemailer": "^6.4.16",
     "nodemailer.js": "0.0.2-security",
     "nodemon": "^2.0.4",
     "pbkdf2": "^3.1.1",
